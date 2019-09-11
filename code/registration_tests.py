@@ -47,6 +47,9 @@ def combining_transforms():
 
     #------------------------------------------------------------------#
     # TODO: Experiment with combining transformation matrices.
+    Example_1_temp = reg.rotate(5*np.pi/3).dot(X)
+    Example_1_result = reg.reflect(-1, 1).dot(Example_1_temp)
+    
     #------------------------------------------------------------------#
 
 
@@ -60,7 +63,7 @@ def t2h_test():
 
     # rotation matrix
     T_rot = reg.rotate(np.pi/4)
-
+    
     Th = util.t2h(T_rot, t)
 
     X_rot_tran = Th.dot(Xh)
@@ -76,9 +79,20 @@ def arbitrary_rotation():
 
     X = util.test_object(1)
     Xh = util.c2h(X)
+    
+    
+    Xt = X[:,0]
 
+    translation_matrix = util.t2h(reg.identity(), Xt)
+    translation_matrix_2 = util.t2h(reg.identity(), -Xt)
+    phi = (45/180)*np.pi
     #------------------------------------------------------------------#
     # TODO: TODO: Perform rotation of the test shape around the first vertex
+    rotational_matrix= np.array([[np.cos(phi), -np.sin(phi), 0], [np.sin(phi), np.cos(phi), 0], [0,0,1]])
+    
+    T_temp = translation_matrix.dot(rotational_matrix)
+    T = T_temp.dot(translation_matrix_2)
+    
     #------------------------------------------------------------------#
 
     X_rot = T.dot(Xh)
