@@ -46,14 +46,17 @@ def t2h(T, t):
     #------------------------------------------------------------------#
     # TODO: Implement conversion of a transformation matrix and a translation vector to homogeneous transformation matrix.
     # remove the 'pass' once implemented
-    
-    
+    if type(t) == list:
+        t = np.asarray(t)
+        
     Xt = t.reshape(-1,1) #transpose translation vector 
     
     #merge the rotation matrix with the translation vector
     SubStep = np.concatenate((T, Xt), axis=1)
+    
     #now add a row with zeros
-    Th = np.concatenate((SubStep, np.array([[0,0,0]])))
+    Th = np.concatenate((SubStep, np.array([[0,0,1]])))
+    
     
     return Th
      

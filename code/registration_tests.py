@@ -80,19 +80,22 @@ def arbitrary_rotation():
     X = util.test_object(1)
     Xh = util.c2h(X)
     
-    
-    Xt = X[:,0]
-
-    translation_matrix = util.t2h(reg.identity(), Xt)
-    translation_matrix_2 = util.t2h(reg.identity(), -Xt)
-    phi = (45/180)*np.pi
     #------------------------------------------------------------------#
-    # TODO: TODO: Perform rotation of the test shape around the first vertex
-    rotational_matrix= np.array([[np.cos(phi), -np.sin(phi), 0], [np.sin(phi), np.cos(phi), 0], [0,0,1]])
+    # TODO: Perform rotation of the test shape around the first vertex
+    Xt = X[:,0]    
+    phi = (45/180)*np.pi
     
-    T_temp = translation_matrix.dot(rotational_matrix)
-    T = T_temp.dot(translation_matrix_2)
+    #matrix to move the figure to new origin
+    translate_matrix = util.t2h(reg.identity(), -Xt)
+    translate_matrix[2][2] = 1 #add the 1 in de third row and column to get 'ones'on the diagonal
+    rotate_matrix = np.array([[np.cos(phi), -np.sin(phi),0], [np.sin(phi), np.cos(phi), 0], [0,0,1]])
+
+    #matrix to move the figure back to original origin
+    translate_matrix_2 = util.t2h(reg.identity(), Xt)
+    translate_matrix_2[2][2] = 1 #add the 1 in de third row and column to get 'ones'on the diagonal
     
+    T =(rotate_matrix.dot(translate_matrix)) #rotate the moved figure
+    T = translate_matrix_2.dot(T) #move the figure back
     #------------------------------------------------------------------#
 
     X_rot = T.dot(Xh)
@@ -101,6 +104,7 @@ def arbitrary_rotation():
     ax1 = fig.add_subplot(111)
     util.plot_object(ax1, X)
     util.plot_object(ax1, X_rot)
+    
     ax1.set_xlim(ax1.get_ylim())
     ax1.grid()
 
@@ -150,7 +154,11 @@ def ls_solve_test():
     #------------------------------------------------------------------#
     # TODO: Test your implementation of the ls_solve definition
     # remove the 'pass' once implemented
-    pass
+    A = np.array([[3, 4], [5, 6], [7,8], [17,10]])
+    b = np.array([1, 2, 3, 4])
+    w,E = reg.ls_solve(A,b)
+    print(w)
+    
     #------------------------------------------------------------------#
 
 

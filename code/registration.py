@@ -115,9 +115,12 @@ def image_transform(I, Th,  output_shape=None):
     X = np.concatenate((xx.reshape((1, xx.size)), yy.reshape((1, yy.size))))
     # convert to homogeneous coordinates
     Xh = util.c2h(X)
-
+    
     #------------------------------------------------------------------#
     # TODO: Perform inverse coordinates mapping.
+    inv_transform = np.linalg.inv(Th)
+    Xt = inv_transform.dot(Xh)
+    
     #------------------------------------------------------------------#
 
     It = ndimage.map_coordinates(I, [Xt[1,:], Xt[0,:]], order=1, mode='constant').reshape(I.shape)
@@ -136,6 +139,16 @@ def ls_solve(A, b):
 
     #------------------------------------------------------------------#
     # TODO: Implement the least-squares solution for w.
+    A_transposed = A.transpose()
+
+    #multiplication of trnapose and A and taking the inverse of the result
+    result_1 = (A_transposed.dot(A))
+    result_2 = np.linalg.inv(result_1)
+    result_3 = result_2.dot(A_transposed)
+    w = result_3.dot(b)
+
+    
+    
     #------------------------------------------------------------------#
 
     # compute the error
@@ -157,6 +170,18 @@ def ls_affine(X, Xm):
     #------------------------------------------------------------------#
     # TODO: Implement least-squares fitting of an affine transformation.
     # Use the ls_solve() function that you have previously implemented.
+    
+    X_transposed = X.transpose() #right side
+
+    #two systems of equations
+    #for x
+    wx, Ex = ls_solve(A, X_transposed[:,0].reshape(-1,1))
+    #for y
+    wy, Ey = ls_solve(A, X_transposed[:,1].reshape(-1,1))
+    
+    #form a homogenoeous transformation matrix
+    T = np.concatenate((wx.transpose(), wy.transpose()))
+
     #------------------------------------------------------------------#
 
     return T
