@@ -211,6 +211,10 @@ def correlation(I, J):
     #------------------------------------------------------------------#
     # TODO: Implement the computation of the normalized cross-correlation.
     # This can be done with a single line of code, but you can use for-loops instead.
+    counter = u.transpose().dot(v)
+    denominator = np.sqrt(u.transpose().dot(u)).dot(np.sqrt(v.transpose().dot(v)))
+    CC = counter/denominator
+
     #------------------------------------------------------------------#
 
     return CC
@@ -261,6 +265,8 @@ def joint_histogram(I, J, num_bins=16, minmax_range=None):
     # intensities in the two images. You need to implement one final
     # step to make p take the form of a probability mass function
     # (p.m.f.).
+    p = p/n
+    
     #------------------------------------------------------------------#
 
     return p
@@ -292,6 +298,7 @@ def mutual_information(p):
     # can use a for-loop instead.
     # HINT: p_I is a column-vector and p_J is a row-vector so their
     # product is a matrix. You can also use the sum() function here.
+    MI = p.dot(np.log(p/(p_I.dot(p_J))))
     #------------------------------------------------------------------#
 
     return MI
@@ -321,6 +328,11 @@ def mutual_information_e(p):
     #------------------------------------------------------------------#
     # TODO: Implement the computation of the mutual information via
     # computation of entropy.
+    H_I = p_I*np.log(p_I)/np.log(2)
+    H_J = p_J*np.log(p_J)/np.log(2)
+    H = p*np.log(p)/np.log(2) 
+    
+    MI = H_I + H_J - H
     #------------------------------------------------------------------#
 
     return MI

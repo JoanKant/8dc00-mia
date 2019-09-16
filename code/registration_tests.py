@@ -50,6 +50,30 @@ def combining_transforms():
     Example_1_temp = reg.rotate(5*np.pi/3).dot(X)
     Example_1_result = reg.reflect(-1, 1).dot(Example_1_temp)
     
+    Example2 = reg.reflect(-1,1).dot(X)
+    Example2_result = reg.rotate(np.pi/2).dot(Example2)
+    
+    Example2_reversed = reg.rotate(np.pi/2).dot(X)
+    Example2_reversed_result = reg.rotate(5*np.pi/3).dot(X)
+    
+    #plotting
+    fig = plt.figure(figsize=(12,5))
+    ax1 = fig.add_subplot(141, xlim=(-4,4), ylim=(-4,4))
+    ax2 = fig.add_subplot(142, xlim=(-4,4), ylim=(-4,4))
+    ax3 = fig.add_subplot(143, xlim=(-4,4), ylim=(-4,4))
+
+    util.plot_object(ax1, X)
+    util.plot_object(ax2,Example2_result )
+    util.plot_object(ax3, Example2_reversed_result)
+
+    ax1.set_title('Original')
+    ax2.set_title('Reflection, rotation')
+    ax3.set_title('Reversed')
+
+    ax1.grid()
+    ax2.grid()
+    ax3.grid()
+    
     #------------------------------------------------------------------#
 
 
@@ -158,6 +182,7 @@ def ls_solve_test():
     b = np.array([1, 2, 3, 4])
     w,E = reg.ls_solve(A,b)
     print(w)
+    print(E)
     
     #------------------------------------------------------------------#
 
@@ -214,6 +239,7 @@ def correlation_test():
 
     #------------------------------------------------------------------#
     # TODO: Implement a few more tests of the correlation definition
+    
     #------------------------------------------------------------------#
 
     print('Test successful!')
@@ -229,6 +255,7 @@ def mutual_information_test():
 
     #------------------------------------------------------------------#
     # TODO: Implement a few tests of the mutual_information definition
+    
     #------------------------------------------------------------------#
 
     print('Test successful!')
