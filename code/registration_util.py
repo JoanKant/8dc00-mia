@@ -88,21 +88,21 @@ def my_cpselect(I_path, Im_path):
     #------------------------------------------------------------------#
     # TODO: Call cpselect and modify the returned point coordinates.
     controlpointlist = cpselect(I_path, Im_path)
-
+    
     #number of points
     numberOfPoints = len(controlpointlist)
     
     
-    X = np.zeros((2,numberOfPoints, 1))
-    Xm = np.zeros((2,numberOfPoints, 1))
+    X = np.zeros(shape= (2,numberOfPoints))
+    Xm = np.zeros(shape= (2,numberOfPoints))
     for i in range(numberOfPoints):
         
         valuesOfPoint = [*controlpointlist[i].values()]
-        X[0,i] = valuesOfPoint[1]
-        X[1,i] = valuesOfPoint[2]
+        X[0][i] = valuesOfPoint[1]
+        X[1][i] = valuesOfPoint[2]
         
-        Xm[0,i] = valuesOfPoint[3]
-        Xm[1,i] = valuesOfPoint[4]
+        Xm[0][i] = valuesOfPoint[3]
+        Xm[1][i] = valuesOfPoint[4]
 
     #------------------------------------------------------------------#
 

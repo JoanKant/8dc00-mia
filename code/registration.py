@@ -105,7 +105,7 @@ def image_transform(I, Th,  output_shape=None):
     # default output size is same as input
     if output_shape is None:
         output_shape = I.shape
-
+    
     # spatial coordinates of the transformed image
     x = np.arange(0, output_shape[1])
     y = np.arange(0, output_shape[0])
@@ -113,12 +113,14 @@ def image_transform(I, Th,  output_shape=None):
 
     # convert to a 2-by-p matrix (p is the number of pixels)
     X = np.concatenate((xx.reshape((1, xx.size)), yy.reshape((1, yy.size))))
+    
     # convert to homogeneous coordinates
     Xh = util.c2h(X)
-    
+    #print(Xh)
     #------------------------------------------------------------------#
     # TODO: Perform inverse coordinates mapping.
     inv_transform = np.linalg.inv(Th)
+    
     Xt = inv_transform.dot(Xh)
     
     #------------------------------------------------------------------#
@@ -181,7 +183,9 @@ def ls_affine(X, Xm):
     
     #form a homogenoeous transformation matrix
     T = np.concatenate((wx.transpose(), wy.transpose()))
-
+    
+    print(T)
+    
     #------------------------------------------------------------------#
 
     return T
@@ -372,8 +376,15 @@ def ngradient(fun, x, h=1e-3):
     # TODO: Implement the  computation of the partial derivatives of
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
-    px = (fun(x+h/2)-fun(x-h/2))/h
-    py = (fun(y+h/2))-f
+    get_variables = fun.__code__.co_varnames #gives a tuple
+    get_variables_list = list(get_variables)
+    g = np.zeros((len(x),1))
+    for k in range(len(x)):
+        
+            
+    
+    
+        g[k] = (fun(x+h/2)-fun(x-h/2))/h
     #------------------------------------------------------------------#
 
     return g
@@ -438,6 +449,9 @@ def affine_corr(I, Im, x):
 
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality
+    
+    C = correlation(I, Im)
+    
     #------------------------------------------------------------------#
 
     return C, Im_t, Th

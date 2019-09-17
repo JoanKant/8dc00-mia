@@ -190,7 +190,7 @@ def ls_solve_test():
 def ls_affine_test():
 
     X = util.test_object(1)
-
+    print(X)
     # convert to homogeneous coordinates
     Xh = util.c2h(X)
 
@@ -201,11 +201,11 @@ def ls_affine_test():
     T = util.t2h(T_rot.dot(T_scale).dot(T_shear), [10, 20])
 
     Xm = T.dot(Xh)
-
+    print(Xm)
     Te = reg.ls_affine(Xh, Xm)
-
+    print(Te)
     Xmt = Te.dot(Xm);
-
+    
     fig = plt.figure(figsize=(12,5))
 
     ax1 = fig.add_subplot(131)
@@ -305,6 +305,9 @@ def ngradient_test():
 
     #------------------------------------------------------------------#
     # TODO: Implement a few more test cases of ngradient
+    test2 = lambda x,y: x+2*y
+    g2 = reg.ngradient(test2, np.ones((1,)))
+    print(g2)
     #------------------------------------------------------------------#
 
     print('Test successful!')

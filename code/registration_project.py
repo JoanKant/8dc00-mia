@@ -7,9 +7,8 @@ import matplotlib.pyplot as plt
 import registration as reg
 from IPython.display import display, clear_output
 
-
 def intensity_based_registration_demo():
-
+    
     # read the fixed and moving images
     # change these in order to read different images
     I = plt.imread('../data/image_data/1_1_t1.tif')
