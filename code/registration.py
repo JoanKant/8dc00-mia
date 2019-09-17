@@ -298,9 +298,24 @@ def mutual_information(p):
     # can use a for-loop instead.
     # HINT: p_I is a column-vector and p_J is a row-vector so their
     # product is a matrix. You can also use the sum() function here.
-    MI = p.dot(np.log(p/(p_I.dot(p_J))))
-    #------------------------------------------------------------------#
+    
+    nzs = p>0 #only non-zero values contribute to the sum
+    #Method 1:
+    MI = np.sum((p[nzs].dot(np.log(p[nzs]/(p_I.dot(p_J))[nzs]))))
+    
+    #MI = np.sum(p.dot(np.log(p/(p_I.dot(p_J)))))
 
+    TotalSum = 0; 
+    #Method 2: 
+#    
+#    for i in range(0,len(p_I)):
+#        for j in range(0,len(p_J)):
+#            temp = p[i,j]*np.log(p[i,j]/p_I[i]*p_J[j])
+#            print(temp)
+#            TotalSum = TotalSum+temp
+#    MI = TotalSum
+    #------------------------------------------------------------------#
+    
     return MI
 
 
@@ -328,11 +343,14 @@ def mutual_information_e(p):
     #------------------------------------------------------------------#
     # TODO: Implement the computation of the mutual information via
     # computation of entropy.
-    H_I = p_I*np.log(p_I)/np.log(2)
-    H_J = p_J*np.log(p_J)/np.log(2)
-    H = p*np.log(p)/np.log(2) 
+    nzs = p>0
     
-    MI = H_I + H_J - H
+    H_I = np.sum(-p_I*(np.log(p_I)))
+    H_J = np.sum(-p_J*(np.log(p_J)))
+    H =  np.sum(-p[nzs].dot(np.log(p[nzs])))
+
+        
+    MI = (H_I + H_J - H)
     #------------------------------------------------------------------#
 
     return MI
@@ -354,6 +372,8 @@ def ngradient(fun, x, h=1e-3):
     # TODO: Implement the  computation of the partial derivatives of
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
+    px = (fun(x+h/2)-fun(x-h/2))/h
+    py = (fun(y+h/2))-f
     #------------------------------------------------------------------#
 
     return g

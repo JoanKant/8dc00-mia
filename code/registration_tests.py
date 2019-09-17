@@ -239,7 +239,12 @@ def correlation_test():
 
     #------------------------------------------------------------------#
     # TODO: Implement a few more tests of the correlation definition
-    
+    #correlation when two signals are exaclty opposite should be very close to -1
+    C2 = reg.correlation(I,-I)
+    assert abs(C2+1)<10e-10, "Correlation function is incorrectly implemented (opposite self correlation test)"
+    #detect corrrelation of two signals with different amplitudes should be 1
+    C3 = reg.correlation(I,I/2)
+    assert abs(C3-1)<10e-10, "Correlation function is incorrectly implemented (different amplitude self correlation test)"
     #------------------------------------------------------------------#
 
     print('Test successful!')
@@ -255,7 +260,19 @@ def mutual_information_test():
 
     #------------------------------------------------------------------#
     # TODO: Implement a few tests of the mutual_information definition
+    #first test
+    random1 = np.random.randint(255, size = (512,512))
+    random2 = np.random.randint(255, size = (512,512))
+    p2 = reg.joint_histogram(random1,random2 )
+    MI2 = reg.mutual_information(p2)
     
+    
+    bound1 = MI2<10e-4
+    bound2 = MI2>-10e-4
+    assert (bound1 == True and bound2 ==True), "The mutual information implementation is wrong"
+
+
+    print(MI2) 
     #------------------------------------------------------------------#
 
     print('Test successful!')
