@@ -306,7 +306,7 @@ def ngradient_test():
     #------------------------------------------------------------------#
     # TODO: Implement a few more test cases of ngradient
     test2 = lambda x,y: x+2*y
-    g2 = reg.ngradient(test2, np.ones((1,)))
+    g2 = reg.ngradient(test2, np.ones[]
     print(g2)
     #------------------------------------------------------------------#
 

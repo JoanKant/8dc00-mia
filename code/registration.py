@@ -116,11 +116,10 @@ def image_transform(I, Th,  output_shape=None):
     
     # convert to homogeneous coordinates
     Xh = util.c2h(X)
-    #print(Xh)
+    
     #------------------------------------------------------------------#
     # TODO: Perform inverse coordinates mapping.
     inv_transform = np.linalg.inv(Th)
-    
     Xt = inv_transform.dot(Xh)
     
     #------------------------------------------------------------------#
@@ -184,7 +183,7 @@ def ls_affine(X, Xm):
     #form a homogenoeous transformation matrix
     T = np.concatenate((wx.transpose(), wy.transpose()))
     
-    print(T)
+    
     
     #------------------------------------------------------------------#
 
@@ -364,6 +363,7 @@ def mutual_information_e(p):
 
 
 def ngradient(fun, x, h=1e-3):
+    from sympy import Symbol, Derivative
     # Computes the derivative of a function with numerical differentiation.
     # Input:
     # fun - function for which the gradient is computed
@@ -376,15 +376,11 @@ def ngradient(fun, x, h=1e-3):
     # TODO: Implement the  computation of the partial derivatives of
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
-    get_variables = fun.__code__.co_varnames #gives a tuple
-    get_variables_list = list(get_variables)
-    g = np.zeros((len(x),1))
-    for k in range(len(x)):
+    
+    y =Symbol('y')
+    g = derivative(fun, y)
         
-            
-    
-    
-        g[k] = (fun(x+h/2)-fun(x-h/2))/h
+       
     #------------------------------------------------------------------#
 
     return g
@@ -446,7 +442,7 @@ def affine_corr(I, Im, x):
 
     NUM_BINS = 64
     SCALING = 100
-
+    
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality
     
