@@ -48,14 +48,20 @@ def t2h(T, t):
     # remove the 'pass' once implemented
     if type(t) == list:
         t = np.asarray(t)
-        
-    Xt = t.reshape(-1,1) #transpose translation vector 
+    th = c2h(t.reshape(-1,1))    
+    
+    #Xt = t.reshape(-1,1) #transpose translation vector 
+    
+    Th = np.eye(3)
+    Th[:,-1] = th.transpose()
+    Th[0:2, 0:2] = T
+    print(Th)
     
     #merge the rotation matrix with the translation vector
-    SubStep = np.concatenate((T, Xt), axis=1)
+    #SubStep = np.concatenate((T, Xt), axis=1)
     
     #now add a row with zeros
-    Th = np.concatenate((SubStep, np.array([[0,0,1]])))
+    #Th = np.vstack((SubStep, np.array([0,0])))
     
     
     return Th

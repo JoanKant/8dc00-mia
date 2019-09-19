@@ -248,6 +248,8 @@ def correlation_test():
     
     C4 = reg.correlation(I, J)
     print(C4)
+    assert abs(C4-1)<10e-10, "Correlation function is incorrectly implemented (two diff images no correlation)"
+    
     #------------------------------------------------------------------#
 
     print('Test successful!')

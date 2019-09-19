@@ -445,13 +445,7 @@ def affine_corr(I, Im, x):
     SCALING = 100
     
     #------------------------------------------------------------------#
-    # TODO: Implement the missing functionality
-#    T_rotate = util.t2h(reg.rotate(x[0]), np.zeros(2))
-#    T_scale = util.t2h(scale(x[1]),x[2]))
-#    T_shear =shear(x[3]),x[4])
-#    T_translate = util
-#    
-    
+    # TODO: Implement the missing functionality   
     
     T_rotate = rotate(x[0])
     T_scaled = scale(x[1],x[2])
