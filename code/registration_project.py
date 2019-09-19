@@ -6,6 +6,60 @@ import numpy as np
 import matplotlib.pyplot as plt
 import registration as reg
 from IPython.display import display, clear_output
+import registration_util as util
+import math
+
+
+def point_based_registration(I_path,Im_path, X, Xm):
+    #read/load the images I and Im
+    imageI = plt.imread(I_path);
+    imageIm = plt.imread(Im_path);
+    
+    #convert to homogenous coordinates using c2h
+    X_h = util.c2h(X)
+    Xm_h= util.c2h(Xm)    
+    
+    #compute affine transformation and make a homogenous transformation matrix
+    Th = reg.ls_affine(X_h,Xm_h)
+    
+    #transfrom the moving image using the transformation matrix
+    It, Xt = reg.image_transform(imageIm, Th)
+    
+    #plotting the results
+    fig = plt.figure(figsize = (20,30))
+    
+    ax1 = fig.add_subplot(131)
+    im1 = ax1.imshow(imageI) #plot first image (fixed or T1) image
+    ax2 = fig.add_subplot(132)
+    im2 = ax2.imshow(imageIm) #plot second image (moving or T2) image
+    ax3 = fig.add_subplot(133)
+    im3 = ax3.imshow(It) #plot (T1 moving or T2) transformed image
+    
+    ax1.set_title('T1 (fixed)')
+    ax2.set_title('T1 moving or T2')
+    ax3.set_title('Transformed (T1 moving or T2) image')
+  
+    return  Th
+
+def Evaluate_point_based_registration(Th, X_target, Xm_target):
+    X_target = util.c2h(X_target)
+    Xmh_target = util.c2h(Xm_target)
+
+    #transform the selected points
+    Xm_target_transformed = Th.dot(Xmh_target)
+   
+    #average distance between points (= target registration error)
+    Error_avgdist = calculateAvg_Distance(X_target, Xm_target_transformed)
+    return Error_avgdist
+
+def calculateAvg_Distance(points, points_t):  
+    totaldistance = 0
+    numberOfPoints = points.shape[1]
+    for i in range(numberOfPoints):
+         dist = math.sqrt((points_t[0,i] - points[0,i])**2 + (points_t[1,i] - points[1,i])**2)  
+         totaldistance = totaldistance+dist
+    average_distance = totaldistance/numberOfPoints        
+    return average_distance
 
 def intensity_based_registration_demo():
     

@@ -245,6 +245,9 @@ def correlation_test():
     #detect corrrelation of two signals with different amplitudes should be 1
     C3 = reg.correlation(I,I/2)
     assert abs(C3-1)<10e-10, "Correlation function is incorrectly implemented (different amplitude self correlation test)"
+    
+    C4 = reg.correlation(I, J)
+    print(C4)
     #------------------------------------------------------------------#
 
     print('Test successful!')
@@ -305,9 +308,14 @@ def ngradient_test():
 
     #------------------------------------------------------------------#
     # TODO: Implement a few more test cases of ngradient
-    test2 = lambda x,y: x+2*y
-    g2 = reg.ngradient(test2, np.ones[]
-    print(g2)
+    testfunction2 = lambda x: 3*x**2
+    g2 = reg.ngradient(testfunction2, np.array([1]))
+    
+    assert abs(g2-6) <1e-5, "Numerical gradient is incorrectly implemented"
+    
+    testfunction3 = lambda x: np.sqrt(x)
+    g3 = reg.ngradient(testfunction3, np.array([1]))
+    assert abs(g3-0.5)<1e-5, "Numerical gradient is incorrectly implemented"
     #------------------------------------------------------------------#
 
     print('Test successful!')

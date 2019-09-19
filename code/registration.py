@@ -182,7 +182,7 @@ def ls_affine(X, Xm):
     
     #form a homogenoeous transformation matrix
     T = np.concatenate((wx.transpose(), wy.transpose()))
-    
+    T = np.vstack((T, np.array([0,0,1])))
     
     
     #------------------------------------------------------------------#
@@ -363,7 +363,6 @@ def mutual_information_e(p):
 
 
 def ngradient(fun, x, h=1e-3):
-    from sympy import Symbol, Derivative
     # Computes the derivative of a function with numerical differentiation.
     # Input:
     # fun - function for which the gradient is computed
@@ -376,11 +375,13 @@ def ngradient(fun, x, h=1e-3):
     # TODO: Implement the  computation of the partial derivatives of
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
-    
-    y =Symbol('y')
-    g = derivative(fun, y)
-        
-       
+    length_x = len(x)
+    g = (np.zeros((1,length_x)))
+    for i in range(length_x):
+         counter = fun(x[i]+h/2)-fun(x[i]-h/2)
+         denominator = h
+         result = counter/denominator
+         g[i] = result
     #------------------------------------------------------------------#
 
     return g
@@ -445,8 +446,27 @@ def affine_corr(I, Im, x):
     
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality
+#    T_rotate = util.t2h(reg.rotate(x[0]), np.zeros(2))
+#    T_scale = util.t2h(scale(x[1]),x[2]))
+#    T_shear =shear(x[3]),x[4])
+#    T_translate = util
+#    
     
-    C = correlation(I, Im)
+    
+    T_rotate = rotate(x[0])
+    T_scaled = scale(x[1],x[2])
+    T_shear = shear(x[3],x[4])
+    t = np.array(x[5:])*SCALING
+    
+    
+    
+    
+    T_total = T_shear.dot((T_scaled).dot(T_rotate))
+    Th = util.t2h(T_total, t)
+    
+    Im_t, Xt = image_transform(Im, Th)
+    C = correlation(Im, Im_t)
+
     
     #------------------------------------------------------------------#
 
@@ -473,6 +493,20 @@ def affine_mi(I, Im, x):
     
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality
+    T_rotate = rotate(x[0])
+    T_scaled = scale(x[1],x[2])
+    T_shear = shear(x[3],x[4])
+    t = np.array(x[5:])*SCALING
+    
+    
+    
+    
+    T_total = T_shear.dot((T_scaled).dot(T_rotate))
+    Th = util.t2h(T_total, t)
+    
+    Im_t, Xt = image_transform(Im, Th)
+    p = joint_histogram(Im, Im_t)
+    MI = mutual_information(p)
     #------------------------------------------------------------------#
 
     return MI, Im_t, Th
