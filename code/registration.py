@@ -376,12 +376,21 @@ def ngradient(fun, x, h=1e-3):
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
     length_x = len(x)
-    g = (np.zeros((1,length_x)))
-    for i in range(length_x):
-         counter = fun(x[i]+h/2)-fun(x[i]-h/2)
-         denominator = h
-         result = counter/denominator
-         g[i] = result
+    if (length_x == 1):
+        counter = fun(x[0]+h/2)-fun(x[0]-h/2)
+        g = counter/h
+    else:  #several partial derivatives
+        g = (np.zeros((1,length_x)))
+        for i in range(length_x):
+            
+            inputparameters_1 = x
+            inputparameters_2 = x
+            par_choice_1 = x[i]+h/2
+            par_choice_2 = x[i]-h/2
+            inputparameters_1[i] = par_choice_1
+            inputparameters_2[i] = par_choice_2
+            counter = np.subtract(fun(inputparameters_1),fun(inputparameters_2))
+            g[0,i] = (counter/h)
     #------------------------------------------------------------------#
 
     return g
@@ -446,22 +455,16 @@ def affine_corr(I, Im, x):
     
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality   
+    T_rotate = rotate(x[0]) #make rotation matrix (2x2 matrix)
+    T_scaled = scale(x[1],x[2]) #make scale matrix (2x2 matrix)
+    T_shear = shear(x[3],x[4]) # make shear matrix (2x2 matrix)
+    t = np.array(x[5:])*SCALING #scale translation vector
     
-    T_rotate = rotate(x[0])
-    T_scaled = scale(x[1],x[2])
-    T_shear = shear(x[3],x[4])
-    t = np.array(x[5:])*SCALING
+    T_total = T_shear.dot((T_scaled).dot(T_rotate)) #multiply the matrices to get the transformation matrix (2x2)
+    Th = util.t2h(T_total, t) #convert to homogeneous transformation matrix (3x3 matrix)
     
-    
-    
-    
-    T_total = T_shear.dot((T_scaled).dot(T_rotate))
-    Th = util.t2h(T_total, t)
-    
-    Im_t, Xt = image_transform(Im, Th)
-    C = correlation(Im, Im_t)
-
-    
+    Im_t, Xt = image_transform(Im, Th) #apply transformation to moving image
+    C = correlation(Im, Im_t) #determine the correlation between the moving and transformed moving image
     #------------------------------------------------------------------#
 
     return C, Im_t, Th

@@ -55,8 +55,7 @@ def t2h(T, t):
     Th = np.eye(3)
     Th[:,-1] = th.transpose()
     Th[0:2, 0:2] = T
-    print(Th)
-    
+   
     #merge the rotation matrix with the translation vector
     #SubStep = np.concatenate((T, Xt), axis=1)
     
