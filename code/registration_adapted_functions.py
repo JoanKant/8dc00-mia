@@ -99,7 +99,7 @@ def affine_corr_adapted(I, Im, x):
     Th = util.t2h(T_total, t) #convert to homogeneous transformation matrix (3x3 matrix)
     
     Im_t, Xt = reg.image_transform(Im, Th) #apply transformation to moving image
-    C = reg.correlation(Im, Im_t) #determine the correlation between the moving and transformed moving image
+    C = reg.correlation(I, Im_t) #determine the correlation between the moving and transformed moving image
     #------------------------------------------------------------------#
 
     return C
@@ -129,14 +129,11 @@ def affine_mi_adapted(I, Im, x):
     T_shear = reg.shear(x[3],x[4])
     t = np.array(x[5:])*SCALING
     
-    
-    
-    
     T_total = T_shear.dot((T_scaled).dot(T_rotate))
     Th = util.t2h(T_total, t)
     
     Im_t, Xt = reg.image_transform(Im, Th)
-    p = reg.joint_histogram(Im, Im_t)
+    p = reg.joint_histogram(I, Im_t)
     MI = reg.mutual_information(p)
     #------------------------------------------------------------------#
 

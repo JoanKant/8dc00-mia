@@ -71,10 +71,7 @@ def calculateAvg_Distance(points, points_t):
     average_distance = totaldistance/numberOfPoints        
     return average_distance
 
-
-
-
-def intensity_based_registration_rigid_Corr_adapted():
+def intensity_based_registration_rigid_Corr_adapted(I_path, Im_path):
     #ADAPTED:
     #Added 1)'fun2' with the original reg.rigid_corr(I, Im, x), because
     #three outputs (C, Im_t, Th) are needed for the visualization. So you 
@@ -85,8 +82,8 @@ def intensity_based_registration_rigid_Corr_adapted():
     
     # read the fixed and moving images
     # change these in order to read different images
-    I = plt.imread('../data/image_data/1_1_t1.tif')
-    Im = plt.imread('../data/image_data/1_1_t1_d.tif')
+    I = plt.imread(I_path)
+    Im = plt.imread(Im_path)
 
     # initial values for the parameters
     # we start with the identity transformation
@@ -159,7 +156,7 @@ def intensity_based_registration_rigid_Corr_adapted():
 
         display(fig)
 
-def intensity_based_registration_affine__Corr_adapted():
+def intensity_based_registration_affine__Corr_adapted(I_path, Im_path):
     #ADAPTED:
     #Added 1)'fun2' with the original reg.affine_corr(I, Im, x), because
     #three outputs (C, Im_t, Th) are needed for the visualization. So you 
@@ -170,8 +167,8 @@ def intensity_based_registration_affine__Corr_adapted():
     
     # read the fixed and moving images
     # change these in order to read different images
-    I = plt.imread('../data/image_data/1_1_t1.tif')
-    Im = plt.imread('../data/image_data/1_1_t1_d.tif')
+    I = plt.imread(I_path)
+    Im = plt.imread(Im_path)
 
     # initial values for the parameters
     # we start with the identity transformation
@@ -244,7 +241,7 @@ def intensity_based_registration_affine__Corr_adapted():
 
         display(fig)
 
-def intensity_based_registration_affine_MI_adapted():
+def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path):
     #ADAPTED:
     #Added 1)'fun2' with the original reg.affine_corr(I, Im, x), because
     #three outputs (C, Im_t, Th) are needed for the visualization. So you 
@@ -255,8 +252,8 @@ def intensity_based_registration_affine_MI_adapted():
     
     # read the fixed and moving images
     # change these in order to read different images
-    I = plt.imread('../data/image_data/1_1_t1.tif')
-    Im = plt.imread('../data/image_data/1_1_t1_d.tif')
+    I = plt.imread(I1_path)
+    Im = plt.imread(Im1_path)
 
     # initial values for the parameters
     # we start with the identity transformation
@@ -272,8 +269,8 @@ def intensity_based_registration_affine_MI_adapted():
     # in which the first two input parameters (fixed and moving image)
     # are fixed and the only remaining parameter is the vector x with the
     # parameters of the transformation
-    fun = lambda x: reg_adapt.affine_corr_adapted(I, Im, x)
-    fun2 = lambda x: reg.affine_corr(I, Im, x)
+    fun = lambda x: reg_adapt.affine_mi_adapted(I, Im, x)
+    fun2 = lambda x: reg.affine_mi(I, Im, x)
     # the learning rate
     mu = 0.001
 
@@ -328,10 +325,7 @@ def intensity_based_registration_affine_MI_adapted():
         learning_curve.set_ydata(similarity)
 
         display(fig)
-
-
-
-
+        
 def intensity_based_registration_demo():
     
     # read the fixed and moving images

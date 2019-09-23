@@ -464,7 +464,7 @@ def affine_corr(I, Im, x):
     Th = util.t2h(T_total, t) #convert to homogeneous transformation matrix (3x3 matrix)
     
     Im_t, Xt = image_transform(Im, Th) #apply transformation to moving image
-    C = correlation(Im, Im_t) #determine the correlation between the moving and transformed moving image
+    C = correlation(I, Im_t) #determine the correlation between the moving and transformed moving image
     #------------------------------------------------------------------#
 
     return C, Im_t, Th
@@ -502,7 +502,7 @@ def affine_mi(I, Im, x):
     Th = util.t2h(T_total, t)
     
     Im_t, Xt = image_transform(Im, Th)
-    p = joint_histogram(Im, Im_t)
+    p = joint_histogram(I, Im_t)
     MI = mutual_information(p)
     #------------------------------------------------------------------#
 
