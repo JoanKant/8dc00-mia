@@ -306,17 +306,7 @@ def mutual_information(p):
     #Method 1:
     MI = np.sum((p[nzs].dot(np.log(p[nzs]/(p_I.dot(p_J))[nzs]))))
     
-    #MI = np.sum(p.dot(np.log(p/(p_I.dot(p_J)))))
-
-    TotalSum = 0; 
-    #Method 2: 
-#    
-#    for i in range(0,len(p_I)):
-#        for j in range(0,len(p_J)):
-#            temp = p[i,j]*np.log(p[i,j]/p_I[i]*p_J[j])
-#            print(temp)
-#            TotalSum = TotalSum+temp
-#    MI = TotalSum
+   
     #------------------------------------------------------------------#
     
     return MI
@@ -380,15 +370,12 @@ def ngradient(fun, x, h=1e-3):
         counter = fun(x[0]+h/2)-fun(x[0]-h/2)
         g = counter/h
     else:  #several partial derivatives
-        g = (np.zeros((1,length_x)))
+        g = (np.zeros((1,length_x)))     
         for i in range(length_x):
-            
-            inputparameters_1 = x
-            inputparameters_2 = x
-            par_choice_1 = x[i]+h/2
-            par_choice_2 = x[i]-h/2
-            inputparameters_1[i] = par_choice_1
-            inputparameters_2[i] = par_choice_2
+            inputparameters_1 = x.copy()
+            inputparameters_2 = x.copy()
+            inputparameters_1[i] = x[i]+h/2
+            inputparameters_2[i] = x[i]-h/2
             counter = np.subtract(fun(inputparameters_1),fun(inputparameters_2))
             g[0,i] = (counter/h)
     #------------------------------------------------------------------#

@@ -138,9 +138,9 @@ def intensity_based_registration_rigid_Corr_adapted(I_path, Im_path):
 
         # gradient ascent
         g = reg.ngradient(fun, x)
+        temp = g*mu
+        x += temp.flatten()
         
-        x =np.add(x, g*mu)
-
         # for visualization of the result
         S, Im_t, _ = fun2(x.flatten())
 
@@ -224,8 +224,9 @@ def intensity_based_registration_affine__Corr_adapted(I_path, Im_path):
         # gradient ascent
         g = reg.ngradient(fun, x)
         
-        x =np.add(x, g*mu)
-
+        temp = g*mu
+        x += temp.flatten()
+       
         # for visualization of the result
         S, Im_t, _ = fun2(x.flatten())
 
@@ -309,8 +310,9 @@ def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path):
         # gradient ascent
         g = reg.ngradient(fun, x)
         
-        x =np.add(x, g*mu)
-
+        temp = g*mu
+        x += temp.flatten()
+       
         # for visualization of the result
         S, Im_t, _ = fun2(x.flatten())
 
@@ -402,3 +404,7 @@ def intensity_based_registration_demo():
         learning_curve.set_ydata(similarity)
 
         display(fig)
+        
+def OptimalLearningRate(mu):
+    
+    return mu

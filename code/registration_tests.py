@@ -248,7 +248,7 @@ def correlation_test():
     
     C4 = reg.correlation(I, J)
     print(C4)
-    assert abs(C4-1)<10e-10, "Correlation function is incorrectly implemented (two diff images no correlation)"
+    assert abs(C4-1)<10e-1, "Correlation function is incorrectly implemented (two diff images no correlation)"
     
     #------------------------------------------------------------------#
 
@@ -266,6 +266,8 @@ def mutual_information_test():
     #------------------------------------------------------------------#
     # TODO: Implement a few tests of the mutual_information definition
     #first test
+    
+    
     random1 = np.random.randint(255, size = (512,512))
     random2 = np.random.randint(255, size = (512,512))
     p2 = reg.joint_histogram(random1,random2 )
@@ -318,6 +320,10 @@ def ngradient_test():
     testfunction3 = lambda x: np.sqrt(x)
     g3 = reg.ngradient(testfunction3, np.array([1]))
     assert abs(g3-0.5)<1e-5, "Numerical gradient is incorrectly implemented"
+    
+    testfunction4 = lambda x, y: x**2 +y**2
+    g4 = reg.ngradient(testfunction4, np.array([2, 5]))
+    print(g4)
     #------------------------------------------------------------------#
 
     print('Test successful!')
