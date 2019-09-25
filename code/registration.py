@@ -305,7 +305,7 @@ def mutual_information(p):
     nzs = p>0 #only non-zero values contribute to the sum
     #Method 1:
     MI = np.sum((p[nzs].dot(np.log(p[nzs]/(p_I.dot(p_J))[nzs]))))
-    
+
    
     #------------------------------------------------------------------#
     
