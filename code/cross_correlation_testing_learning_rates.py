@@ -35,7 +35,7 @@ stepsize = (mu_max-mu_min)/runs
 looplist = np.arange(mu_max, mu_min, -stepsize)
 similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similarities for every iteration
 
-for i in range(runs+1):
+for i in range(runs):
     mu = looplist[i]
     display("This is for mu = " + str(mu) + " " + str(i+1) + " out of " + str(runs))
     
