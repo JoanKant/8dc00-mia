@@ -60,11 +60,13 @@ for i in range(runs):
 """
 Method 2: Test a single learning rate
 """
+#single run
+#mu = 1
+
 #savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
 #savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
    
-#single run
-#mu = 1
+
 #sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
 #plt.savefig(savepath_fig)
 #np.save(savepath_sim_matrix, sim) 

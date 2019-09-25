@@ -23,45 +23,46 @@ path = 'C:/Users/20171880/Desktop/8dc00-mia/results'
 """
 METHOD 1: Test multiple learning rates
 """
-#Give maximal and minimum learning rate
-mu_max = 0.001
-mu_min = 0.0001
-
-#Number of runs (how many learning rates to test)
-runs = 3
-
-#Do not change the following lines
-stepsize = (mu_max-mu_min)/runs
-looplist = np.arange(mu_max, mu_min, -stepsize)
-similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similarities for every iteration
-
-for i in range(runs):
-    mu = looplist[i]
-    display("This is for mu = " + str(mu) + " " + str(i+1) + " out of " + str(runs))
-    
-    #configure the savepaths for figure and similarity matrix
-    #Change following lines with the right names, only change the strings 'with_T1...' etc.
-    savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
-    savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
-    
-    #calculating the similarities and returning the list and figure
-    sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
-    #place the similarities in the similarity_matrix
-    similarity_matrix[i] = np.asarray(sim).transpose()
-    
-    #saving figure and similarities for the multiple runs
-    plt.savefig(savepath_fig)
-    np.save(savepath_sim_matrix, similarity_matrix) 
-   
+##Give maximal and minimum learning rate
+#mu_max = 0.001
+#mu_min = 0.0001
+#
+##Number of runs (how many learning rates to test)
+#runs = 3
+#
+##Do not change the following lines
+#stepsize = (mu_max-mu_min)/runs
+#looplist = np.arange(mu_max, mu_min, -stepsize)
+#similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similarities for every iteration
+#
+#for i in range(runs):
+#    mu = looplist[i]
+#    display("This is for mu = " + str(mu) + " " + str(i+1) + " out of " + str(runs))
+#    
+#    #configure the savepaths for figure and similarity matrix
+#    #Change following lines with the right names, only change the strings 'with_T1...' etc.
+#    savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
+#    savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
+#    
+#    #calculating the similarities and returning the list and figure
+#    sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
+#    #place the similarities in the similarity_matrix
+#    similarity_matrix[i] = np.asarray(sim).transpose()
+#    
+#    #saving figure and similarities for the multiple runs
+#    plt.savefig(savepath_fig)
+#    np.save(savepath_sim_matrix, similarity_matrix) 
+#   
     
 """
 Method 2: Test a single learning rate
 """
-#savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
-#savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
-   
 #single run
-#mu = 1
-#sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
-#plt.savefig(savepath_fig)
-#np.save(savepath_sim_matrix, sim) 
+mu = 0.0007
+savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
+savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
+   
+
+sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
+plt.savefig(savepath_fig)
+np.save(savepath_sim_matrix, sim) 
