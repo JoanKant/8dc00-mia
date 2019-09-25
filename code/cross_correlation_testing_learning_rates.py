@@ -31,7 +31,7 @@ mu_min = 0.0001
 runs = 3
 
 #Do not change the following lines
-stepsize = (0.0001-0.00001)/runs
+stepsize = (mu_max-mu_min)/runs
 looplist = np.arange(mu_max, mu_min, -stepsize)
 similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similarities for every iteration
 
