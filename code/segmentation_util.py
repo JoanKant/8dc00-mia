@@ -19,6 +19,19 @@ def ngradient(fun, x, h=1e-3):
     # TODO: Implement the  computation of the partial derivatives of
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
+    length_x = len(x)
+    if (length_x == 1):
+        counter = fun(x[0]+h/2)-fun(x[0]-h/2)
+        g = counter/h
+    else:  #several partial derivatives
+        g = (np.zeros((1,length_x)))     
+        for i in range(length_x):
+            inputparameters_1 = x.copy()
+            inputparameters_2 = x.copy()
+            inputparameters_1[i] = x[i]+h/2
+            inputparameters_2[i] = x[i]-h/2
+            counter = np.subtract(fun(inputparameters_1),fun(inputparameters_2))
+            g[0,i] = (counter/h)
     #------------------------------------------------------------------#
 
     return g
@@ -98,6 +111,7 @@ def extract_features(image_number, slice_number):
     #------------------------------------------------------------------#
     # TODO: Extract more features and add them to X.
     # Don't forget to provide (short) descriptions for the features
+    
     #------------------------------------------------------------------#
     return X, features
 

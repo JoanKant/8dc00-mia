@@ -24,7 +24,7 @@ def scatter_data_test(showFigs=True):
     X1 = I.flatten().T
     X1 = X1.reshape(-1, 1)
     GT = plt.imread('../data/dataset_brains/1_1_gt.tif')
-    gt_mask = GT>0
+    gt_mask = GT>0.5
     Y = gt_mask.flatten() # labels
 
     I_blurred = ndimage.gaussian_filter(I, sigma=2)
@@ -38,6 +38,7 @@ def scatter_data_test(showFigs=True):
 
     #------------------------------------------------------------------#
     # TODO: Implement a few test cases of with different features
+    
     #------------------------------------------------------------------#
     return X_data, Y
 
@@ -66,6 +67,7 @@ def scatter_t2_test(showFigs=True):
 
     #------------------------------------------------------------------#
     # TODO: Extract features from the T2 image and compare them to the T1 features
+    
     #------------------------------------------------------------------#
     return X_data, Y
 

@@ -34,39 +34,41 @@ runs = 3
 stepsize = (mu_max-mu_min)/runs
 looplist = np.arange(mu_max, mu_min, -stepsize)
 similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similarities for every iteration
-
-for i in range(runs):
-    mu = looplist[i]
-    display("This is for mu = " + str(mu) + " " + str(i+1) + " out of " + str(runs))
-    
-    #configure the savepaths for figure and similarity matrix
-    #Change following lines with the right names, only change the strings 'with_T1...' etc.
-    savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
-    savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
-    
-    #calculating the similarities and returning the list and figure
-    #change the image paths if needed and comment/uncomment one of the lines. So either affine or rigid
-    #sim, fig = proj.intensity_based_registration_affine__Corr_adapted(I1_path, I2_path, mu)
-    sim, fig = proj.intensity_based_registration_rigid_Corr_adapted(I1_path, I2_path, mu)
-    
-    #place the similarities in the similarity_matrix
-    similarity_matrix[i] = np.asarray(sim).transpose()
-    
-    #saving figure and similarities for the multiple runs
-    plt.savefig(savepath_fig)
-    np.save(savepath_sim_matrix, similarity_matrix) 
-   
-    
+#
+#for i in range(runs):
+#    mu = looplist[i]
+#    display("This is for mu = " + str(mu) + " " + str(i+1) + " out of " + str(runs))
+#    
+#    #configure the savepaths for figure and similarity matrix
+#    #Change following lines with the right names, only change the strings 'with_T1...' etc.
+#    savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
+#    savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
+#    
+#    #calculating the similarities and returning the list and figure
+#    #change the image paths if needed and comment/uncomment one of the lines. So either affine or rigid
+#    #sim, fig = proj.intensity_based_registration_affine__Corr_adapted(I1_path, I2_path, mu)
+#    sim, fig = proj.intensity_based_registration_rigid_Corr_adapted(I1_path, I2_path, mu)
+#    
+#    #place the similarities in the similarity_matrix
+#    similarity_matrix[i] = np.asarray(sim).transpose()
+#    
+#    #saving figure and similarities for the multiple runs
+#    plt.savefig(savepath_fig)
+#    np.save(savepath_sim_matrix, similarity_matrix) 
+#   
+#    
 """
 Method 2: Test a single learning rate
 """
 #single run
-#mu = 1
+mu = 0.00013
 
-#savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
-#savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
+savepath_fig = path+'/\u03BC = ' + str(mu)+'project_final_crosscorr_with_T1_ and_T2.png'
+savepath_sim_matrix = path +'/project_final_cross_corr_T1_and_T2_sim'+str(mu)
    
 
 #sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
-#plt.savefig(savepath_fig)
-#np.save(savepath_sim_matrix, sim) 
+sim, fig = proj.intensity_based_registration_rigid_Corr_adapted(I1_path, Im1_path, mu)
+
+plt.savefig(savepath_fig)
+np.save(savepath_sim_matrix, sim) 

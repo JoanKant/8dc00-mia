@@ -45,11 +45,11 @@ def point_based_registration(I_path,Im_path, X, Xm):
     ax3 = fig.add_subplot(133)
     im3 = ax3.imshow(It) #plot (T1 moving or T2) transformed image
     
-    ax1.set_title('T1 (fixed)')
-    ax2.set_title('T1 moving or T2')
-    ax3.set_title('Transformed (T1 moving or T2) image')
+    ax1.set_title('T1 fixed')
+    ax2.set_title('T1 moving')
+    ax3.set_title('Transformed T1 moving')
   
-    return  Th
+    return  Th, fig, It
 
 def Evaluate_point_based_registration(Th, X_target, Xm_target):
     X_target = util.c2h(X_target)
@@ -119,18 +119,18 @@ def intensity_based_registration_rigid_Corr_adapted(I_path, Im_path, mu = 0.001)
     # moving image
     im2 = ax1.imshow(I, alpha=0.7)
     # parameters
-    txt = ax1.text(0.05, 0.95,
-        np.array2string(x, precision=5, floatmode='fixed'),
-        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 10},
-        transform=ax1.transAxes)
-
+#    txt = ax1.text(0.05, 0.95,
+#        np.array2string(x, precision=5, floatmode='fixed'),
+#        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 10},
+#        transform=ax1.transAxes)
+    ax1.title.set_text( np.array2string(x, precision=5, floatmode='fixed'))
     # 'learning' curve
     ax2 = fig.add_subplot(122, xlim=(0, num_iter), ylim=(0, 1))
 
     learning_curve, = ax2.plot(iterations, similarity, lw=2)
     ax2.set_xlabel('Iteration')
     ax2.set_ylabel('Similarity')
-    ax2.title.set_text('mu = '+ str(mu))
+    ax2.title.set_text('\u03BC = '+ str(mu))
     ax2.grid()
 
 
@@ -149,13 +149,16 @@ def intensity_based_registration_rigid_Corr_adapted(I_path, Im_path, mu = 0.001)
 
         # update moving image and parameters
         im2.set_data(Im_t)
-        txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
+        #txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
+
+        ax1.title.set_text( np.array2string(x, precision=5, floatmode='fixed'))
+
 
         # update 'learning' curve
         similarity[k] = S
         learning_curve.set_ydata(similarity)
 
-        #display(fig)
+        display(fig)
     return similarity, fig
 
 
@@ -209,10 +212,10 @@ def intensity_based_registration_affine__Corr_adapted(I_path, Im_path, mu = 0.00
     im2 = ax1.imshow(I, alpha=0.7)
     # parameters
     # parameters
-    txt = ax1.text(0.05, 0.95,
-        np.array2string(x, precision=5, floatmode='fixed'),
-        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 10},
-        transform=ax1.transAxes)
+#    txt = ax1.text(0.05, 0.95,
+#        np.array2string(x, precision=5, floatmode='fixed'),
+#        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 10},
+#        transform=ax1.transAxes)
 
     # 'learning' curve
     ax2 = fig.add_subplot(122, xlim=(0, num_iter), ylim=(0, 1))
@@ -239,7 +242,8 @@ def intensity_based_registration_affine__Corr_adapted(I_path, Im_path, mu = 0.00
 
         # update moving image and parameters
         im2.set_data(Im_t)
-        txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
+#        txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
+        ax1.title.set_text( np.array2string(x, precision=5, floatmode='fixed'))
 
         # update 'learning' curve
         similarity[k] = S
@@ -298,10 +302,11 @@ def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path, mu = 0.001
     # moving image
     im2 = ax1.imshow(I, alpha=0.7)
     # parameters
-    txt = ax1.text(0.05, 0.95,
-        np.array2string(x, precision=5, floatmode='fixed'),
-        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 10},
-        transform=ax1.transAxes)
+#    txt = ax1.text(0.05, 0.95,
+#        np.array2string(x, precision=5, floatmode='fixed'),
+#        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 10},
+#        transform=ax1.transAxes)
+#    
 
     # 'learning' curve
     ax2 = fig.add_subplot(122, xlim=(0, num_iter), ylim=(0, 1))
@@ -328,8 +333,8 @@ def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path, mu = 0.001
 
         # update moving image and parameters
         im2.set_data(Im_t)
-        txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
-
+#        txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
+        ax1.title.set_text( np.array2string(x, precision=5, floatmode='fixed'))
         # update 'learning' curve
         similarity[k] = S
         learning_curve.set_ydata(similarity)
@@ -337,16 +342,17 @@ def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path, mu = 0.001
         display(fig)
     return similarity, fig
 
-def OptimalSimilarity(similarity_values):
-    if type(similarity_values) ==list:
-        MaximumSimilarity = max(similarity_values)
-        IndexOfMaximum = similarity_values.index(MaximumSimilarity)
-    else: 
-        MaximumSimilarity = np.amax(similarity_values, axis = 0)
-        
-        IndexOfMaximum = (similarity_values[:, None] == MaximumSimilarity).argmax(axis=0)
+def MaximumSimilarityValue(similarity_path):
+    similarity_values = np.load(similarity_path)
+#    if type(similarity_values) ==list:
+#        MaximumSimilarity = max(similarity_values)
+#        IndexOfMaximum = similarity_values.index(MaximumSimilarity)
+#    else: 
+    MaximumSimilarity = np.amax(similarity_values, axis = 0)
+    
+    IndexOfMaximum = (similarity_values[:, None] == MaximumSimilarity).argmax(axis=0)
 
-        
+    
     return MaximumSimilarity, IndexOfMaximum
     
     

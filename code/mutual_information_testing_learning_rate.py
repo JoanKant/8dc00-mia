@@ -17,25 +17,25 @@ I1_path = '../data/image_data/1_1_t1.tif'
 Im1_path = '../data/image_data/1_1_t1_d.tif'
 I2_path = '../data/image_data/1_1_t2.tif'
 
-#Path for saving 
+##Path for saving 
 path = 'C:/Users/20171880/Desktop/8dc00-mia/results'
 
 """
 METHOD 1: Test multiple learning rates
 """
-##Give maximal and minimum learning rate
-#mu_max = 0.001
+#Give maximal and minimum learning rate
+#mu_max = 0.00015
 #mu_min = 0.0001
 #
 ##Number of runs (how many learning rates to test)
-#runs = 3
+#runs = 5
 #
 ##Do not change the following lines
 #stepsize = (mu_max-mu_min)/runs
-#looplist = np.arange(mu_max, mu_min, -stepsize)
-#similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similarities for every iteration
+#looplist = np.arange(mu_max-stepsize, mu_min, -stepsize)
+#similarity_matrix = np.zeros((runs-1, 200)) #every row consists of all the similarities for every iteration
 #
-#for i in range(runs):
+#for i in range(runs-1):
 #    mu = looplist[i]
 #    display("This is for mu = " + str(mu) + " " + str(i+1) + " out of " + str(runs))
 #    
@@ -57,9 +57,9 @@ METHOD 1: Test multiple learning rates
 """
 Method 2: Test a single learning rate
 """
-#single run
-mu = 0.0007
-savepath_fig = path+'/mu = ' + str(mu)+'with_T1_ and_T2.png'
+##single run
+mu = 0.0001
+savepath_fig = path+'/\u03BC = ' + str(mu)+'mutual_info_with_T1_ and_T2.png'
 savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
    
 

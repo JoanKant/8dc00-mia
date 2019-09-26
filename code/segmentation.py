@@ -64,7 +64,7 @@ def extract_coordinate_feature(im):
     # TODO: Use the above variables to create an image coord_im
     # that combines the information from x_coord and y_coord 
     
-    coord_im = 
+    coord_im = 0
     #------------------------------------------------------------------#
     
     # Create a feature from the coordinate image
