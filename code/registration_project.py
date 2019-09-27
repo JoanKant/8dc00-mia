@@ -223,7 +223,7 @@ def intensity_based_registration_affine__Corr_adapted(I_path, Im_path, mu = 0.00
     learning_curve, = ax2.plot(iterations, similarity, lw=2)
     ax2.set_xlabel('Iteration')
     ax2.set_ylabel('Similarity')
-    ax2.title.set_text('mu = '+ str(mu))
+    ax2.title.set_text('\u03BC = '+ str(mu))
     ax2.grid()
 
     # perform 'num_iter' gradient ascent updates
@@ -314,7 +314,7 @@ def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path, mu = 0.001
     learning_curve, = ax2.plot(iterations, similarity, lw=2)
     ax2.set_xlabel('Iteration')
     ax2.set_ylabel('Similarity')
-    ax2.title.set_text('mu = '+ str(mu))
+    ax2.title.set_text('\u03BC = '+ str(mu))
     ax2.grid()
 
     # perform 'num_iter' gradient ascent updates
@@ -335,6 +335,7 @@ def intensity_based_registration_affine_MI_adapted(I1_path, Im1_path, mu = 0.001
         im2.set_data(Im_t)
 #        txt.set_text(np.array2string(x, precision=5, floatmode='fixed'))
         ax1.title.set_text( np.array2string(x, precision=5, floatmode='fixed'))
+        
         # update 'learning' curve
         similarity[k] = S
         learning_curve.set_ydata(similarity)

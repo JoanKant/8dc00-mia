@@ -16,10 +16,12 @@ import registration_adapted_functions as reg_adapt
 import registration_project as proj
 
 #path to directory of the results
-path = 'C:\Users\20171880\Desktop\8dc00-mia\results'
+path = "C:/Users/20171880/Desktop/8dc00-mia/results/Final results"
 #name of file 
-filename = ''
+filename = "/final_project_affine_mautual_info_T1_and_T2_sim0.00025.npy"
 
-#fullpath = 
-#MaximumSimilarityValue()
+fullpath = path+filename
+maximum_simil, index_value = proj.MaximumSimilarityValue(fullpath)
 
+display("Maximum similarity is: "+str(maximum_simil[0]))
+display("Iteration: "+str(index_value[0][0]+1))

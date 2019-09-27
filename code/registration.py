@@ -216,8 +216,8 @@ def correlation(I, J):
     # This can be done with a single line of code, but you can use for-loops instead.
     counter = u.transpose().dot(v)
     denominator = np.sqrt(u.transpose().dot(u)).dot(np.sqrt(v.transpose().dot(v)))
-    CC = counter/denominator
-
+    temp_CC = counter/denominator
+    CC = temp_CC.item()
     #------------------------------------------------------------------#
 
     return CC
@@ -305,7 +305,7 @@ def mutual_information(p):
     nzs = p>0 #only non-zero values contribute to the sum
     #Method 1:
     MI = np.sum((p[nzs].dot(np.log(p[nzs]/(p_I.dot(p_J))[nzs]))))
-
+    MI = MI.item()
    
     #------------------------------------------------------------------#
     

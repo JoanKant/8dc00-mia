@@ -58,9 +58,9 @@ METHOD 1: Test multiple learning rates
 Method 2: Test a single learning rate
 """
 ##single run
-mu = 0.0001
-savepath_fig = path+'/\u03BC = ' + str(mu)+'mutual_info_with_T1_ and_T2.png'
-savepath_sim_matrix = path +'/T1_and_T2_sim'+str(mu)
+mu = 0.00015
+savepath_fig = path+'/\u03BC = ' + str(mu)+'final_project_affine_mutual_info_with_T1_ and_T2.png'
+savepath_sim_matrix = path +'/final_project_affine_mautual_info_T1_and_T2_sim'+str(mu)
    
 
 sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)

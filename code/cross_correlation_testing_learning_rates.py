@@ -61,14 +61,15 @@ similarity_matrix = np.zeros((runs, 200)) #every row consists of all the similar
 Method 2: Test a single learning rate
 """
 #single run
-mu = 0.00013
+mu = 0.0004
 
-savepath_fig = path+'/\u03BC = ' + str(mu)+'project_final_crosscorr_with_T1_ and_T2.png'
-savepath_sim_matrix = path +'/project_final_cross_corr_T1_and_T2_sim'+str(mu)
+savepath_fig = path+'/\u03BC = ' + str(mu)+'project_affine_final_crosscorr_with_T1_ and_T1m.png'
+savepath_sim_matrix = path +'/project_affine_final_cross_corr_T1_and_T1m_sim'+str(mu)
    
 
 #sim, fig = proj.intensity_based_registration_affine_MI_adapted(I1_path, I2_path, mu)
-sim, fig = proj.intensity_based_registration_rigid_Corr_adapted(I1_path, Im1_path, mu)
+#sim, fig = proj.intensity_based_registration_rigid_Corr_adapted(I1_path, Im1_path, mu)
+sim, fig = proj.intensity_based_registration_affine__Corr_adapted(I1_path, Im1_path, mu)
 
 plt.savefig(savepath_fig)
 np.save(savepath_sim_matrix, sim) 

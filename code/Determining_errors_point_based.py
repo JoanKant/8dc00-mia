@@ -52,6 +52,6 @@ Evaluation of point-based affine image registration
 Reg_error1 = proj.Evaluate_point_based_registration(transformation_matrix, X1_target, Xm1_target)
 display("The registration error will be printed, please write the error down in Word")
 if set_of_images ==1: 
-    print('Registration error for pair of T1 and T1 moving image slices:\n{}'.format(Reg_error1))
+    print('Registration error for pair of T1 and T1 moving image slices:\n{:.2f}'.format(Reg_error1))
 else: 
-    print('Registration error for pair of T1 and T2 image slices:\n{}'.format(Reg_error1))
+    print('Registration error for pair of T1 and T2 image slices:\n{:.2f}'.format(Reg_error1))
