@@ -18,7 +18,7 @@ import registration_project as proj
 #path to directory of the results
 path = "C:/Users/20171880/Desktop/8dc00-mia/results/Final results"
 #name of file 
-filename = "/final_project_affine_mautual_info_T1_and_T2_sim0.00025.npy"
+filename = "/final_project_affine_mutual_info_T1_and_T1m_sim0.00015.npy"
 
 fullpath = path+filename
 maximum_simil, index_value = proj.MaximumSimilarityValue(fullpath)

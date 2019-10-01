@@ -111,6 +111,8 @@ def extract_features(image_number, slice_number):
     #------------------------------------------------------------------#
     # TODO: Extract more features and add them to X.
     # Don't forget to provide (short) descriptions for the features
+    features+=('T1 blurred (gauss) intensity')
+    features += ('T2 blurred (gauss) intensity')
     
     #------------------------------------------------------------------#
     return X, features
