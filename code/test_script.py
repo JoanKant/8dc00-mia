@@ -16,7 +16,7 @@ import segmentation as seg
 
 import segmentation_tests as test
 
-X, Y = test.scatter_data_test(showFigs=False)
+X, Y = scatter_data_test(showFigs=False)
 I = plt.imread('../data/dataset_brains/1_1_t1.tif')
 c, coord_im = seg.extract_coordinate_feature(I)
 X_data = np.concatenate((X, c), axis=1)
@@ -24,11 +24,9 @@ X_data = np.concatenate((X, c), axis=1)
 # TODO: Write code to normalize your dataset containing variety of features,
 #  then examine the mean and std dev
 train_data, _ = seg.normalize_data(X_data)
-for i in range(6):
    
-    norm_feature_mean = np.mean(train_data[i])
-    norm_feature_dev = np.std(train_data[i])
+norm_feature_mean = np.mean(train_data,1)
+norm_feature_dev = np.std(train_data,1)
+for i in range(6):
 
-    print("The mean is: {:.2f} and the standard deviation is: {:.2f}".format(norm_feature_mean, norm_feature_dev))
-    
-    #------------------------------------------------------------------#
+    print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,norm_feature_mean.item(i), norm_feature_dev.item(i)))

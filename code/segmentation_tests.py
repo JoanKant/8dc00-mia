@@ -155,18 +155,13 @@ def feature_stats_test():
     X_data = np.concatenate((X, c), axis=1)
     #------------------------------------------------------------------#
     # TODO: Write code to examine the mean and standard deviation of your dataset containing variety of features
-#    print(X_data.shape)
     
+    
+    feature_mean = np.mean(X_data,1)
+    feature_std = np.std(X_data,1)
     for i in range(6):
-        feature_mean = np.mean(X_data[:,i])
-        feature_std = np.std(X_data[:,i])
-        
-#        print("The mean deviation of feature "+ str(i+1)+ " is: ")
-#        print(feature_mean)
-#        print("The standard deviation of feature "+ str(i+1)+ " is: ")
-#        print(feature_std)
-        print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,feature_mean, feature_std))
-    
+         print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,feature_mean.item(i), feature_std.item(i)))
+   
     #------------------------------------------------------------------#
 
 
@@ -179,12 +174,12 @@ def normalized_stats_test():
     # TODO: Write code to normalize your dataset containing variety of features,
     #  then examine the mean and std dev
     train_data, _ = seg.normalize_data(X_data)
-    for i in range(6):
        
-        norm_feature_mean = np.mean(train_data[i])
-        norm_feature_dev = np.std(train_data[i])
+    norm_feature_mean = np.mean(train_data,1)
+    norm_feature_dev = np.std(train_data,1)
+    for i in range(6):
     
-        print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,norm_feature_mean, norm_feature_dev))
+        print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,norm_feature_mean.item(i), norm_feature_dev.item(i)))
 
 
     #------------------------------------------------------------------#
