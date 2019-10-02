@@ -38,6 +38,26 @@ def scatter_data_test(showFigs=True):
 
     #------------------------------------------------------------------#
     # TODO: Implement a few test cases of with different features
+    features += ('T1 gauss 5',)
+    features += ('T1 gauss 10',)
+    features += ('T1 gauss 15',)
+    I_blurred_5 = ndimage.gaussian_filter(I, sigma=5)
+    X5 = I_blurred_5.flatten().T
+    X5 = X5.reshape(-1, 1)
+    
+    I_blurred_10 = ndimage.gaussian_filter(I, sigma=10)
+    X10 = I_blurred_10.flatten().T
+    X10 = X10.reshape(-1, 1)
+    
+    I_blurred_15 = ndimage.gaussian_filter(I, sigma=15)
+    X15 = I_blurred_15.flatten().T
+    X15 = X15.reshape(-1, 1)
+    
+    X_data = np.concatenate((X1, X2, X5, X10, X15), axis=1)
+    
+    
+    util.scatter_data(X_data,Y,1,3)
+    
     
     #------------------------------------------------------------------#
     return X_data, Y
@@ -62,11 +82,57 @@ def scatter_t2_test(showFigs=True):
 
     X_data = np.concatenate((X1, X12), axis=1)
     features = ('T1 intensity', 'T1 gauss 2') # Keep track of features you added
-    if showFigs:
-        util.scatter_data(X_data,Y,0,1)
+#    if showFigs:
+#        util.scatter_data(X_data,Y,0,1)
 
     #------------------------------------------------------------------#
     # TODO: Extract features from the T2 image and compare them to the T1 features
+    features += ('T1 gauss 5',)
+    features += ('T1 gauss 10',)
+    features += ('T1 gauss 0',)
+    
+    features +=('T2 intensity',)
+    features += ('T2 gauss 2',)
+    features += ('T2 gauss 5',)
+    features += ('T2 gauss 10',)
+    features += ('T2 gauss 0',)
+    
+    #features for I1
+    I_blurred_5 = ndimage.gaussian_filter(I1, sigma=5)
+    X5 = I_blurred_5.flatten().T
+    X5 = X5.reshape(-1, 1)
+    
+    I_blurred_10 = ndimage.gaussian_filter(I1, sigma=10)
+    X10 = I_blurred_10.flatten().T
+    X10 = X10.reshape(-1, 1)
+    
+    I_blurred_15 = ndimage.gaussian_filter(I1, sigma=0)
+    X15 = I_blurred_15.flatten().T
+    X15 = X15.reshape(-1, 1)
+    
+    #features for I2
+    I2_blurred = ndimage.gaussian_filter(I2, sigma=4)
+    X22 = I2_blurred.flatten().T
+    X22 = X22.reshape(-1, 1)
+
+    I_blurred_5_2 = ndimage.gaussian_filter(I2, sigma=5)
+    X5_2 = I_blurred_5_2.flatten().T
+    X5_2 = X5_2.reshape(-1, 1)
+    
+    I_blurred_10_2 = ndimage.gaussian_filter(I2, sigma=10)
+    X10_2 = I_blurred_10_2.flatten().T
+    X10_2 = X10_2.reshape(-1, 1)
+    
+    I_blurred_15_2 = ndimage.gaussian_filter(I2, sigma=0)
+    X15_2 = I_blurred_15_2.flatten().T
+    X15_2 = X15_2.reshape(-1, 1)
+    
+#    X_data_all = np.concatenate((X1, X12, X5, X10, X15, 
+  #                           X2, X22, X5_2, X10_2, X15_2), axis=1)
+    X_data_all = np.concatenate((X1, X2), axis=1)
+    
+    util.scatter_data(X_data_all,Y,0,1) #X1 and X2
+        
     
     #------------------------------------------------------------------#
     return X_data, Y
@@ -89,6 +155,18 @@ def feature_stats_test():
     X_data = np.concatenate((X, c), axis=1)
     #------------------------------------------------------------------#
     # TODO: Write code to examine the mean and standard deviation of your dataset containing variety of features
+#    print(X_data.shape)
+    
+    for i in range(6):
+        feature_mean = np.mean(X_data[:,i])
+        feature_std = np.std(X_data[:,i])
+        
+#        print("The mean deviation of feature "+ str(i+1)+ " is: ")
+#        print(feature_mean)
+#        print("The standard deviation of feature "+ str(i+1)+ " is: ")
+#        print(feature_std)
+        print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,feature_mean, feature_std))
+    
     #------------------------------------------------------------------#
 
 
@@ -100,6 +178,15 @@ def normalized_stats_test():
     #------------------------------------------------------------------#
     # TODO: Write code to normalize your dataset containing variety of features,
     #  then examine the mean and std dev
+    train_data, _ = seg.normalize_data(X_data)
+    for i in range(6):
+       
+        norm_feature_mean = np.mean(train_data[i])
+        norm_feature_dev = np.std(train_data[i])
+    
+        print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,norm_feature_mean, norm_feature_dev))
+
+
     #------------------------------------------------------------------#
 
 
