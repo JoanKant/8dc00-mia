@@ -189,6 +189,12 @@ def distance_test():
     #------------------------------------------------------------------#
     # TODO: Generate a Gaussian dataset, with 100 samples per class, and compute the distances.
     #  Use plt.imshow() to visualize the distance matrix as an image.
+    X, Y = seg.generate_gaussian_data(100) # Generates 100 samples per Gaussian class
+    X = np.round(X*3) # Stretch and round the numbers
+    
+    D = scipy.spatial.distance.cdist(X, X, metric='euclidean')
+    
+    plt.imshow(D)
     #------------------------------------------------------------------#
     pass
 
@@ -197,8 +203,22 @@ def small_samples_distance_test():
     # TODO: Generate a small sample Gaussian dataset X,
     #  create dataset C as per the instructions,
     #  and calculate and plot the distances between the datasets.
+    X, Y = seg.generate_gaussian_data(100) 
+    C = np.array([[0,0],[1,1]])
+    
+    D1 = scipy.spatial.distance.cdist(X, C, metric='euclidean') #distances between X and C
+    D2 = scipy.spatial.distance.cdist(C,X, metric = 'euclidean')
+    
+    
+    fig = plt.figure(figsize=(10,10))
+    ax1  = fig.add_subplot(121)
+    ax1.imshow(D1)
+    ax2  = fig.add_subplot(122)
+    ax2.imshow(D2)  
+    #mirroring when changing the order of inputs
+
     #------------------------------------------------------------------#
-    pass
+    return X, Y, C, D1
 
 def minimum_distance_test(X, Y, C, D):
     #------------------------------------------------------------------#
@@ -206,6 +226,18 @@ def minimum_distance_test(X, Y, C, D):
     #  calculate the distances between the datasets,
     #  order the distances (min to max) using the provided code,
     #  calculate how many samples are closest to each of the samples in `C`
+
+    
+
+    #plotting X and C on top of each other
+    plt.scatter(X[:,0], X[:,1], color = 'b')
+    plt.scatter(C[:,0], C[:,1], color = 'r') #X1 and X2
+    
+    min_index = np.argmin(D, axis=1)
+    min_dist = D[:,min_index]
+    
+    print(min_index)
+    print(min_dist)    
     #------------------------------------------------------------------#
     pass
 
