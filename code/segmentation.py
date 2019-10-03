@@ -7,8 +7,8 @@ Segmentation module code for 8DC00 course
 import numpy as np
 import scipy
 from sklearn.neighbors import KNeighborsClassifier
-
-
+import random
+import segmentation_util as util
 # SECTION 1. Segmentation in feature space
 
 def generate_gaussian_data(N=100, mu1=[0,0], mu2=[2,0], sigma1=[[1,0],[0,1]], sigma2=[[1,0],[0,1]]):
@@ -121,6 +121,17 @@ def cost_kmeans(X, w_vector):
     # TODO: Find distance of each point to each cluster center
     # Then find the minimum distances min_dist and indices min_index
     # Then calculate the cost
+    D = scipy.spatial.distance.cdist(X, W , metric='euclidean') #distances between X and C
+
+    min_index = np.argmin(D, axis=1)
+    min_dist = np.zeros((1,len(min_index)))
+    for i in range(len(min_index)):
+        min_dist[0,i] = D[i,min_index[i]]
+   
+    squared_euc_dist = np.sum((np.square(min_dist)))
+    
+    J = squared_euc_dist/len(min_index)
+    
     #------------------------------------------------------------------#
     return J
 
@@ -135,46 +146,59 @@ def kmeans_clustering(test_data, K=2):
     # Output:
     # predicted_labels    num_test x 1 predicted vector with labels for the test data
 
-    # Link to the cost function of kMeans
+    #Link to the cost function of kMeans
     fun = lambda w: cost_kmeans(test_data, w)
-
-
+    
+    
+    
     # the learning rate
     mu = 0.01
-
+    
     # iterations
     num_iter = 100
-
-    #------------------------------------------------------------------#
-    # TODO: Initialize cluster centers and store them in w_initial
-    #------------------------------------------------------------------#
-
-    #Reshape centers to a vector (needed by ngradient)
+    
+    ##------------------------------------------------------------------#
+    ## TODO: Initialize cluster centers and store them in w_initial
+    N,M = test_data.shape
+    idx = np.random.randint(N, size=K)
+    w_initial = test_data[idx,:]
+    ##------------------------------------------------------------------#
+    #
+    ##Reshape centers to a vector (needed by ngradient)
+    #
     w_vector = w_initial.reshape(K*M, 1)
-
     for i in np.arange(num_iter):
         # gradient ascent
-        w_vector = w_vector - mu*reg.ngradient(fun,w_vector)
-
+        g = util.ngradient(fun,w_vector)
+        w_vector = w_vector - mu*g.T
+    
     #Reshape back to dataset
     w_final = w_vector.reshape(K, M)
-
+    
     #------------------------------------------------------------------#
     # TODO: Find distance of each point to each cluster center
     # Then find the minimum distances min_dist and indices min_index
+    D = scipy.spatial.distance.cdist(test_data, w_final, metric='euclidean') #distances between X and C
+    min_index = np.argmin(D, axis=1)
+    min_dist = np.zeros((len(min_index),1))
+    for i in range(len(min_index)):
+        min_dist[i,0] = D.item((i, min_index[i]))
+    
+    
+    
+    
     #------------------------------------------------------------------#
-
+    
     # Sort by intensity of cluster center
     sorted_order = np.argsort(w_final[:,0], axis=0)
-
+    
     # Update the cluster indices based on the sorted order and return results in
     # predicted_labels
     predicted_labels = np.empty(*min_index.shape)
     predicted_labels[:] = np.nan
-
+    
     for i in np.arange(len(sorted_order)):
         predicted_labels[min_index==sorted_order[i]] = i
-
     return predicted_labels
 
 
@@ -192,6 +216,25 @@ def nn_classifier(train_data, train_labels, test_data):
 
     #------------------------------------------------------------------#
     # TODO: Implement missing functionality
+ 
+    D = scipy.spatial.distance.cdist(test_data, train_data, metric='euclidean') #distances between X and C
+    min_index = np.argmin(D, axis=1)
+    min_dist = np.zeros((len(min_index),1))
+    for i in range(len(min_index)):
+        min_dist[i,0] = D.item((i, min_index[i]))
+    
+    # Sort by intensity of cluster center
+    sorted_order = np.argsort(train_data[:,0], axis=0)
+    
+    # Update the cluster indices based on the sorted order and return results in
+    # predicted_labels
+    predicted_labels = np.empty(*min_index.shape)
+    predicted_labels[:] = np.nan
+    
+    for i in np.arange(len(sorted_order)):
+        predicted_labels[min_index==sorted_order[i]] = i
+    
+    
     #------------------------------------------------------------------#
 
 

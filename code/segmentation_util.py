@@ -28,9 +28,12 @@ def ngradient(fun, x, h=1e-3):
         for i in range(length_x):
             inputparameters_1 = x.copy()
             inputparameters_2 = x.copy()
-            inputparameters_1[i] = x[i]+h/2
-            inputparameters_2[i] = x[i]-h/2
+            inputparameters_1[i] = x.item(i)+h/2
+            inputparameters_2[i] = x.item(i)-h/2
+            
+            
             counter = np.subtract(fun(inputparameters_1),fun(inputparameters_2))
+           
             g[0,i] = (counter/h)
     #------------------------------------------------------------------#
 
@@ -241,6 +244,7 @@ def classification_error(true_labels, predicted_labels):
 
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality for classification error
+    err = np.sum(t != p)*100/len(t)
     #------------------------------------------------------------------#
     return err
 

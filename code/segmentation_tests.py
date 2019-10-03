@@ -54,9 +54,8 @@ def scatter_data_test(showFigs=True):
     X15 = X15.reshape(-1, 1)
     
     X_data = np.concatenate((X1, X2, X5, X10, X15), axis=1)
-    
-    
-    util.scatter_data(X_data,Y,1,3)
+    if showFigs: 
+        util.scatter_data(X_data,Y,1,3)
     
     
     #------------------------------------------------------------------#
@@ -157,8 +156,8 @@ def feature_stats_test():
     # TODO: Write code to examine the mean and standard deviation of your dataset containing variety of features
     
     
-    feature_mean = np.mean(X_data,1)
-    feature_std = np.std(X_data,1)
+    feature_mean = np.mean(X_data,0)
+    feature_std = np.std(X_data,0)
     for i in range(6):
          print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,feature_mean.item(i), feature_std.item(i)))
    
@@ -175,8 +174,8 @@ def normalized_stats_test():
     #  then examine the mean and std dev
     train_data, _ = seg.normalize_data(X_data)
        
-    norm_feature_mean = np.mean(train_data,1)
-    norm_feature_dev = np.std(train_data,1)
+    norm_feature_mean = np.mean(train_data,0)
+    norm_feature_dev = np.std(train_data,0)
     for i in range(6):
     
         print("Feature {} has the following properties. The mean is: {:.2f} and the standard deviation is: {:.2f}".format(i+1,norm_feature_mean.item(i), norm_feature_dev.item(i)))
@@ -234,10 +233,12 @@ def minimum_distance_test(X, Y, C, D):
     plt.scatter(C[:,0], C[:,1], color = 'r') #X1 and X2
     
     min_index = np.argmin(D, axis=1)
-    min_dist = D[:,min_index]
+    min_dist = np.zeros((200,1))
+    for i in range(len(min_index)):
+        min_dist[i,0] = D.item((i, min_index[i]))
     
-    print(min_index)
-    print(min_dist)    
+    number_closest_to_2nd_point = np.sum(min_dist)
+    print(number_closest_to_2nd_point)    
     #------------------------------------------------------------------#
     pass
 
@@ -246,8 +247,28 @@ def distance_classification_test():
     #------------------------------------------------------------------#
     # TODO: Use the provided code to generate training and testing data
     #  Classify the points in test_data, based on their distances d to the points in train_data
+    train_data, trainlabels = seg.generate_gaussian_data(2)
+    test_data, testlabels = seg.generate_gaussian_data(1)
+    
+    D = scipy.spatial.distance.cdist(test_data, train_data, metric='euclidean') #distances between X and C
+    min_index = np.argmin(D, axis=1)
+    min_dist = np.zeros((len(min_index),1))
+    for i in range(len(min_index)):
+        min_dist[i,0] = D.item((i, min_index[i]))
+    
+    # Sort by intensity of cluster center
+    sorted_order = np.argsort(train_data[:,0], axis=0)
+    
+    # Update the cluster indices based on the sorted order and return results in
+    # predicted_labels
+    predicted_labels = np.empty(*min_index.shape)
+    predicted_labels[:] = np.nan
+    
+    for i in np.arange(len(sorted_order)):
+        predicted_labels[min_index==sorted_order[i]] = i
+    return predicted_labels
     #------------------------------------------------------------------#
-    pass
+    
 
 def funX(X):
     return lambda w: seg.cost_kmeans(X,w)
@@ -317,7 +338,7 @@ def kmeans_demo():
 
         # gradient ascent
         g = util.ngradient(fun,w_vector)
-        w_vector = w_vector - mu*g
+        w_vector = w_vector - mu*g.T
         # calculate cost for plotting
         kmeans_cost[k] = fun(w_vector)
         text_str = 'k={}, cost={:.2f}'.format(k, kmeans_cost[k])
@@ -336,8 +357,18 @@ def kmeans_demo():
 def kmeans_clustering_test():
     #------------------------------------------------------------------#
     #TODO: Store errors for training data
+
+    X, Y = scatter_data_test(showFigs=False)
+    I = plt.imread('../data/dataset_brains/1_1_t1.tif')
+    c, coord_im = seg.extract_coordinate_feature(I)
+    X_data = np.concatenate((X, c), axis=1)
+    #
+    normalized_Xdata, _ = seg.normalize_data(X_data)
+    
+    kmeans_cost = seg.kmeans_clustering(normalized_Xdata)
+    return kmeans_cost
     #------------------------------------------------------------------#
-    pass
+#    pass
 
 def nn_classifier_test_samples():
 
@@ -353,6 +384,7 @@ def nn_classifier_test_samples():
     print('Predicted labels:\n{}'.format(predicted_labels))
     print('Error:\n{}'.format(err))
 
+    pass 
 
 def generate_train_test(N, task):
     # generates a training and a test set with the same
@@ -367,6 +399,10 @@ def generate_train_test(N, task):
     if task == 'easy':
         #-------------------------------------------------------------------#
         #TODO: modify these values to create an easy train/test dataset pair
+        mu1 = 0
+        mu2 = 0
+        sigma1 = 0
+        sigma2 = 0
         #-------------------------------------------------------------------#
         pass
 
@@ -374,6 +410,10 @@ def generate_train_test(N, task):
     if task == 'hard':
         #-------------------------------------------------------------------#
         #TODO: modify these values to create an difficult train/test dataset pair
+        mu1 = 0
+        mu2 = 0
+        sigma1 = 0
+        sigma2 = 0
         #-------------------------------------------------------------------#
         pass
 
