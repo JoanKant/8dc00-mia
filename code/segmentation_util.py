@@ -114,8 +114,8 @@ def extract_features(image_number, slice_number):
     #------------------------------------------------------------------#
     # TODO: Extract more features and add them to X.
     # Don't forget to provide (short) descriptions for the features
-    features+=('T1 blurred (gauss) intensity')
-    features += ('T2 blurred (gauss) intensity')
+    features+=('T1 blurred (gauss) intensity',)
+    features += ('T2 blurred (gauss) intensity',)
     
     #------------------------------------------------------------------#
     return X, features
@@ -187,6 +187,20 @@ def dice_overlap(true_labels, predicted_labels, smooth=1.):
 
     #------------------------------------------------------------------#
     # TODO: Implement the missing functionality for Dice overlap
+    
+    FP = 0
+    FN = 0
+    TP = 0
+    for i in range(len(t)):
+        if t[i] == False and p[i] == True:
+            FP +=1 
+        elif t[i] == True and p[i] == False:
+            FN += 1
+        elif t[i] == True and p[i] == True: 
+            TP +=1
+        
+    
+    dice = 2*TP/(2*TP + FP + FN)
     #------------------------------------------------------------------#
     return dice
 

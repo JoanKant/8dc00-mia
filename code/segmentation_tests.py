@@ -399,10 +399,10 @@ def generate_train_test(N, task):
     if task == 'easy':
         #-------------------------------------------------------------------#
         #TODO: modify these values to create an easy train/test dataset pair
-        mu1 = 0
-        mu2 = 0
-        sigma1 = 0
-        sigma2 = 0
+        mu1 = [4,5]
+        mu2 = [4,5]
+        sigma1 = [[5,0],[0,1]]
+        sigma2 =[[5,0],[0,1]]
         #-------------------------------------------------------------------#
         pass
 
@@ -410,10 +410,10 @@ def generate_train_test(N, task):
     if task == 'hard':
         #-------------------------------------------------------------------#
         #TODO: modify these values to create an difficult train/test dataset pair
-        mu1 = 0
-        mu2 = 0
-        sigma1 = 0
-        sigma2 = 0
+        mu1 = [4,5]
+        mu2 = [2,2]
+        sigma1 = [[5,0],[0,1]]
+        sigma2 = [[6,3],[6,3]]
         #-------------------------------------------------------------------#
         pass
 
@@ -427,6 +427,17 @@ def easy_hard_data_classifier_test():
     #-------------------------------------------------------------------#
     #TODO: generate and classify (using nn_classifier) 2 pairs of datasets (easy and hard)
     # calculate classification error in each case
+    EasytrainX, EasytrainY, EasytestX, EasytestY = generate_train_test(100, 'easy')
+    HardtrainX, HardtrainY, HardtestX, HardtestY = generate_train_test(100, 'hard')
+
+    predictedLabels_easy = seg.nn_classifier(EasytrainX, EasytrainY, EasytestX)
+    class_error_easy = util.classification_error(EasytrainY, predictedLabels_easy)
+    
+    predictedLabels_hard = seg.nn_classifier(EasytrainX, EasytrainY, EasytestX)
+    class_error_hard = util.classification_error(HardtrainX, HardtrainY, predictedLabels_hard)
+    
+    print("Easy task's error: {}".format(class_error_easy))
+    print("Hard task's error: {}".format(class_error_hard))
     #-------------------------------------------------------------------#
     pass
 
@@ -502,7 +513,8 @@ def knn_curve():
             # neigh.fit(subset_train_data, subset_train_labels)
             # #Evaluate
             # predicted_test_labels = neigh.predict(test_data)
-
+            print(predicted_test_labels)
+            
             test_error[i,j] = util.classification_error(test_labels, predicted_test_labels)
             dice[i,j] = util.dice_overlap(test_labels, predicted_test_labels)
 

@@ -256,8 +256,8 @@ def knn_classifier(train_data, train_labels, test_data, k):
     sort_ix = np.argsort(D, axis=1)
     sort_ix_k = sort_ix[:,:k] # Get the k smallest distances
     predicted_labels = train_labels[sort_ix_k]
-    predicted_labels = scipy.stats.mode(predicted_labels, axis=1)[0]
-
+    predicted_labels = scipy.stats.mode(predicted_labels, axis=1)[0]    
+    
     return predicted_labels
 
 
