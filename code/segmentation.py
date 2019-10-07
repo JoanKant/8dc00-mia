@@ -282,7 +282,14 @@ def mypca(X):
     #------------------------------------------------------------------#
     #TODO: Calculate covariance matrix of X, find eigenvalues and eigenvectors,
     # sort them, and rotate X using the eigenvectors
-
+    cov_matrix = np.cov(X,rowvar=False)
+    np.sort(cov_matrix)
+    w, v = np.linalg.eig(cov_matrix)
+    np.sort(w)
+    np.sort(v)
+    
+    X_pca = X.dot(v)
+    
     #------------------------------------------------------------------#
 
     #Return fraction of variance
@@ -322,6 +329,11 @@ def segmentation_combined_atlas(train_labels_matrix, combining='mode'):
     
     #------------------------------------------------------------------#
     # TODO: Add options for combining with min and max
+        # Combine labels of training images:
+    elif combining == 'min':
+        predicted_labels = np.amin(predicted_labels, axis = 1)
+    elif combining == 'max':
+        predicted_labels = np.amax(predicted_labels, axis = 1)
     #------------------------------------------------------------------#
     else:
         raise ValueError("No such combining type exists")

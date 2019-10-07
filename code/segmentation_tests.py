@@ -551,6 +551,10 @@ def learning_curve():
 
     #------------------------------------------------------------------#
     #TODO: Store errors for training data
+    train_error = np.empty([len(train_sizes) , num_iter])
+    train_error[:] = np.nan
+    train_dice = np.empty([len(train_sizes),num_iter])
+    train_dice[:] = np.nan
     #------------------------------------------------------------------#
 
     ## Train and test with different values
@@ -576,6 +580,10 @@ def learning_curve():
 
             #------------------------------------------------------------------#
             #TODO: Predict training labels and evaluate
+            predicted_train_labels = neigh.predict(train_data)
+            
+            train_error[i,j] = util.classification_error(train_labels, predicted_train_labels) 
+            train_dice[i,j] = util.dice_overlap(train_labels, predicted_train_labels)
             #------------------------------------------------------------------#
 
     ## Display results
@@ -588,6 +596,10 @@ def learning_curve():
 
     #------------------------------------------------------------------#
     #TODO: Plot training size
+    x = np.log(train_sizes)
+    y_train = np.mean(train_error,1)
+    yerr_test = np.std(train_error,1)
+    p2 = ax1.errorbar(x, y_train, yerr=y_train, label='Train error')
     #------------------------------------------------------------------#
 
     ax1.set_xlabel('Number of training samples (k)')
@@ -726,6 +738,11 @@ def covariance_matrix_test():
     #------------------------------------------------------------------#
     # TODO: Calculate the mean and covariance matrix of the data,
     #  and compare them to the parameters you used as input.
+    matrix_mean = np.mean(X)
+    matrix_cov = np.cov(X)
+    print("Mean: {}".format(matrix_mean))
+    print("Covariant matrix: {}".format(matrix_cov))
+    return  X, Y, matrix_cov
     #------------------------------------------------------------------#
 
 
@@ -734,14 +751,22 @@ def eigen_vecval_test(sigma):
     # TODO: Compute the eigenvectors and eigenvalues of the covariance matrix,
     #  what two properties can you name about the eigenvectors? How can you verify these properties?
     #  which eigenvalue is the largest and which is the smallest?
+    w,v = np.linalg.eig(sigma)
+    ix = np.argsort(w)[::-1] #Find ordering of eigenvalues
+    w = w[ix] #Reorder eigenvalues
+    v = v[:, ix] #Reorder eigenvectors
+    return v,w
     #------------------------------------------------------------------#
-    pass
+    #pass
 
 def rotate_using_eigenvectors_test(X, Y, v):
     #------------------------------------------------------------------#
     # TODO: Rotate X using the eigenvectors
+
+    X_rotated = X.dot(v)
+    return X_rotated
     #------------------------------------------------------------------#
-    pass
+    #pass
 
 def test_mypca():
 
@@ -812,6 +837,36 @@ def segmentation_combined_atlas_test():
     #  Convert true label into mask image, and
     #  View both masks on the same axis,
     #  Also calculate dice coefficient and error
+    # Combine labels of training images:
+    predicted_labels = stats.mode(all_labels_matrix[:,:4], axis=1)[0]
+    
+    # Convert combined label into mask image:
+    predicted_mask = predicted_labels.reshape(240,240)
+    
+    # Convert true label into mask image:
+    true_mask = all_labels_matrix[:,4].reshape(240,240)
+    
+    # View both masks on the same axis using imshow()
+    
+    class_error = util.classification_error(all_labels_matrix[:,4], predicted_labels)
+    dice_Overlap = util.dice_overlap(all_labels_matrix[:,4], predicted_labels)
+    
+    print("The error: {:.2f}".format(class_error))
+    print("Dice coefficient: {:.2f}".format(dice_Overlap))
+    
+    
+    
+    fig = plt.figure(figsize=(10,13))
+    ax1  = fig.add_subplot(121)
+    ax1.imshow(predicted_mask, cmap = 'Oranges_r')
+    
+  
+    
+    ax2  = fig.add_subplot(122)
+    ax2.imshow(true_mask)
+    
+
+    
     #------------------------------------------------------------------#
 
 
