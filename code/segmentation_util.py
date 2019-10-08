@@ -5,7 +5,8 @@ Utility functions for segmentation.
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-
+from scipy import ndimage, stats
+import cv2
 def ngradient(fun, x, h=1e-3):
     # Computes the derivative of a function with numerical differentiation.
     # Input:
@@ -114,9 +115,47 @@ def extract_features(image_number, slice_number):
     #------------------------------------------------------------------#
     # TODO: Extract more features and add them to X.
     # Don't forget to provide (short) descriptions for the features
-    features+=('T1 blurred (gauss) intensity',)
-    features += ('T2 blurred (gauss) intensity',)
+    features += ('T1 gauss 5',)
+    features += ('T2 gauss 5',)
+    features += ('T1 gauss 15',)
+    features += ('T2 gauss 15',)
+    features += ("T1 Laplacian",)
+    features += ("T2 Laplacian",)
     
+    
+    #Features for T1
+    t1_blurred_5 = ndimage.gaussian_filter(t1, sigma=5)
+    t1_5 = t1_blurred_5.flatten().T
+    t1_5 = t1_5.reshape(-1, 1)
+    
+    t1_blurred_15 = ndimage.gaussian_filter(t1, sigma=15)
+    t1_15 = t1_blurred_15.flatten().T
+    t1_15 = t1_15.reshape(-1, 1)
+    
+    t1_LaPlacian = cv2.Laplacian(t1, cv2.CV_64F)
+    t1_lapl = t1_LaPlacian.flatten().T
+    t1_lapl = t1_lapl.reshape(-1,1)
+    
+    
+    
+    #Features for T2
+    t2_blurred_5 = ndimage.gaussian_filter(t2, sigma=5)
+    t2_5 = t2_blurred_5.flatten().T
+    t2_5 = t2_5.reshape(-1, 1)
+    
+    t2_blurred_15 = ndimage.gaussian_filter(t2, sigma=15)
+    t2_15 = t2_blurred_15.flatten().T
+    t2_15 = t2_15.reshape(-1, 1)
+    
+    t2_LaPlacian = cv2.Laplacian(t1, cv2.CV_64F)
+    t2_lapl = t2_LaPlacian.flatten().T
+    t2_lapl = t2_lapl.reshape(-1,1)
+    
+
+
+
+    X2 =  np.concatenate((t2f, t2_5, t2_15, t2_lapl), axis=1)
+    X = np.concatenate((t1f, t1_5, t1_15, t1_lapl, t2_lapl), axis=1)
     #------------------------------------------------------------------#
     return X, features
 
@@ -149,14 +188,14 @@ def create_labels(image_number, slice_number, task):
 
     I = plt.imread(base_dir + str(image_number) + '_' + str(slice_number) + '_gt.tif')
 
-    if task == 'brain':
+    if task == 'tissue':
         Y = I>0
     elif task == 'brain':
-        white_matter = I == 2 | I == 5
-        gray_matter  = I == 7 | I == 3
-        csf         = I == 4 | I == 8
-        background  = I == 0 |  I == 1 | I == 6
-        Y = I
+        white_matter = (I == 2) | (I == 5)
+        gray_matter  = (I == 7) | (I == 3)
+        csf         = (I == 4) | (I == 8)
+        background  = (I == 0) |  (I == 1) | (I == 6)
+        Y = I.copy()
         Y[background] = 0
         Y[white_matter] = 1
         Y[gray_matter] = 2
@@ -164,7 +203,7 @@ def create_labels(image_number, slice_number, task):
     else:
         print(task)
         raise ValueError("Variable 'task' must be one of two values: 'brain' or 'tissue'")
-
+   
     Y = Y.flatten().T
     Y = Y.reshape(-1,1)
 

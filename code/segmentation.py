@@ -9,6 +9,11 @@ import scipy
 from sklearn.neighbors import KNeighborsClassifier
 import random
 import segmentation_util as util
+
+import matplotlib.pyplot as plt
+import segmentation as seg
+from scipy import ndimage, stats
+
 # SECTION 1. Segmentation in feature space
 
 def generate_gaussian_data(N=100, mu1=[0,0], mu2=[2,0], sigma1=[[1,0],[0,1]], sigma2=[[1,0],[0,1]]):
@@ -428,3 +433,40 @@ def segmentation_knn(train_data, train_labels, test_data, k=1):
     predicted_labels = neigh.predict(test_data_norm)
 
     return predicted_labels
+
+# Project
+def load_images():
+    #the labels are based on a different task: white matter vs gray matter vs cerebrospinal fluid
+    
+    GT = plt.imread('../data/dataset_brains/1_1_gt.tif')
+    GT_new = GT.copy()
+    print(GT_new[150])
+    for k in range(len(GT_new)):
+        for i in range(len(GT_new)):
+            
+            if GT[k][i] == 8:
+                GT_new[k][i] = 1
+            elif GT[k][i] == 4:
+                GT_new[k][i] = 1
+            elif GT[k][i] == 5:
+                GT_new[k][i] = 2
+            elif GT[k][i] == 2:
+                GT_new[k][i] = 2
+            elif GT[k][i] == 7:
+                GT_new[k][i] = 3
+            elif GT[k][i] == 3:
+                GT_new[k][i] = 3
+            
+
+    fig = plt.figure(figsize=(5,5))
+    ax1  = fig.add_subplot(111)
+    ax1.imshow(GT_new)
+    X = GT_new.flatten().T
+    return GT_new
+
+def extract_feature_project():
+    image_number = 1
+    slice_number = 1
+    task = 'tissue'
+    X, Y, feature_labels = util.create_dataset(image_number, slice_number, task)
+    return X, Y, feature_labels

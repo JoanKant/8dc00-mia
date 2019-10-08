@@ -7,7 +7,7 @@ Project code+scripts for 8DC00 course
 # Imports
 
 import numpy as np
-import utilities as util
+import segmentation_util as util
 import matplotlib.pyplot as plt
 import segmentation as seg
 
@@ -40,7 +40,13 @@ def segmentation_demo():
     #Load data
     train_data, train_labels, train_feature_labels = util.create_dataset(train_subject,train_slice,task)
     test_data, test_labels, test_feature_labels = util.create_dataset(test_subject,test_slice,task)
-
+    
+    util.scatter_data(train_data, train_labels, 0, 6)
+    util.scatter_data(test_data, test_labels, 0,6)
+    
+    
+    
+    
     predicted_labels = seg.segmentation_atlas(None, train_labels, None)
 
     err = util.classification_error(test_labels, predicted_labels)
