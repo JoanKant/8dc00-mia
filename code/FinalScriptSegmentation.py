@@ -39,7 +39,7 @@ for i in all_subjects:
     all_labels_matrix[:,i] = train_labels.flatten()
     
 #Select data with certain features and normalize it
-features = [1,4] #you can change it to whatever features you want
+features = [4,5] #you can change it to whatever features you want
 train_data,_ = seg.normalize_data(train_data[:, features])
 test_data ,_= seg.normalize_data(test_data[:,features])
 all_data_matrix, _ = seg.normalize_data(all_data_matrix[:, features, :])
@@ -52,3 +52,5 @@ error = util.classification_error(train_labels, predicted_labels)
 
 print("Dice score of combined methods is {:.2f}".format(dice))
 print("Error of combined methods is {:.2f}".format(error))
+
+

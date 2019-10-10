@@ -138,7 +138,7 @@ def segmentation_mymethod(train_data, train_labels, all_data_matrix, all_labels_
         clusters = 2
 #    train_data_matrix,_ = seg.normalize_data(train_data_matrix)
 #    test_data,_ = seg.normalize_data(test_data)
-    _, _, w_final = kmeans(train_data, train_labels, clusters, mu = 0.1, num_iter = 5)
+    _, _, w_final = kmeans(train_data, train_labels, clusters, mu = 0.01, num_iter = 200)
     
     pred_labels_kmeans = predicted_kmeans_test(w_final, test_data)
     _, pred_labels_cat = seg.segmentation_combined_atlas(train_labels, combining='mode') 
