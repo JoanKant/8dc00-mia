@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import segmentation as seg
 
 
+
 def segmentation_mymethod(train_data_matrix, train_labels_matrix, test_data, task='brain'):
     # segments the image based on your own method!
     # Input:

@@ -270,7 +270,7 @@ def knn_classifier(train_data, train_labels, test_data, k):
 # SECTION 2. Generalization and overfitting
 
 
-def mypca(X):
+def mypca(X, threshold = 0.95):
     # Rotates the data X such that the dimensions of rotated data Xpca
     # are uncorrelated and sorted by variance.
     # Input:
@@ -289,19 +289,30 @@ def mypca(X):
     # sort them, and rotate X using the eigenvectors
     cov_matrix = np.cov(X,rowvar=False)
     np.sort(cov_matrix)
-    w, v = np.linalg.eig(cov_matrix)
-    np.sort(w)
-    np.sort(v)
+    w,v   = np.linalg.eig(cov_matrix)
     
-    X_pca = X.dot(v)
+    idx = np.argsort(w)[::-1] #find ordering of eigenvalues
+    w = w[idx] #reorder eigenvalues
+    v = v[:,idx]#reorder eigenvectors
+
+    
+    #X_pca = (v.T.dot(X.T)).T
     
     #------------------------------------------------------------------#
 
     #Return fraction of variance
-    fraction_variance = np.zeros((X_pca.shape[1],1))
-    for i in np.arange(X_pca.shape[1]):
+    fraction_variance = np.zeros((X.shape[1],1))
+    for i in np.arange(X.shape[1]):
         fraction_variance[i] = np.sum(w[:i+1])/np.sum(w)
 
+
+    new_index = np.argmax(fraction_variance>threshold)
+    
+
+  
+    w = w[:new_index+1]
+    v = v[:,:new_index+1]
+    X_pca = (v.T.dot(X.T)).T
     return X_pca, v, w, fraction_variance
 
 

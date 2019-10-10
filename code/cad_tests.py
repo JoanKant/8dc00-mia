@@ -48,6 +48,7 @@ def linear_regression():
     trainXones = util.addones(trainX)
     trainY = train_data[:,1].reshape(-1,1)
     
+    Theta, _ = reg.ls_solve(trainXones, trainY)
     #---------------------------------------------------------------------#
 
     fig1 = plt.figure(figsize=(10,10))
@@ -73,6 +74,7 @@ def linear_regression():
 
     #---------------------------------------------------------------------#
     # TODO: Compute the error for the trained model.
+    
     #---------------------------------------------------------------------#
 
     return E_validation, E_test
