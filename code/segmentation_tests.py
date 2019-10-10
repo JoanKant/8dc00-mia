@@ -350,6 +350,7 @@ def kmeans_demo():
         display(fig)
         clear_output(wait = True)
         plt.pause(.005)
+    
 
     return kmeans_cost
 

@@ -190,9 +190,9 @@ def create_labels(image_number, slice_number, task):
 
     I = plt.imread(base_dir + str(image_number) + '_' + str(slice_number) + '_gt.tif')
 
-    if task == 'tissue':
+    if task == 'brain':
         Y = I>0
-    elif task == 'brain':
+    elif task == 'tissue':
         white_matter = (I == 2) | (I == 5)
         gray_matter  = (I == 7) | (I == 3)
         csf         = (I == 4) | (I == 8)
@@ -341,11 +341,11 @@ def extract_myfeatures(image_number, slice_number):
 
 
     #Features for T1
-    t1_blurred_1 = ndimage.gaussian_filter(t1, sigma=5)
+    t1_blurred_1 = ndimage.gaussian_filter(t1, sigma=3)
     t1_1 = t1_blurred_1.flatten().T
     t1_1 = t1_1.reshape(-1, 1)
     
-    t1_blurred_2 = ndimage.gaussian_filter(t1, sigma=12)
+    t1_blurred_2 = ndimage.gaussian_filter(t1, sigma=8)
     t1_2 = t1_blurred_2.flatten().T
     t1_2 = t1_2.reshape(-1, 1)
     

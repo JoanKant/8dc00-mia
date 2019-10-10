@@ -10,10 +10,116 @@ import numpy as np
 import segmentation_util as util
 import matplotlib.pyplot as plt
 import segmentation as seg
+from IPython.display import display, clear_output
+from scipy import ndimage, stats
+import scipy
 
 
+def funX(X):
+    return lambda w: seg.cost_kmeans(X,w)
 
-def segmentation_mymethod(train_data_matrix, train_labels_matrix, test_data, task='brain'):
+def kmeans(X, labels, k = 4, mu = 0.01, num_iter = 100):
+    N, M = X.shape
+    #Define number of clusters we want
+    clusters = k;
+
+    # Cost function used by k-Means
+    # fun = lambda w: seg.cost_kmeans(X,w)
+    fun = funX(X)
+
+    ## Algorithm
+    #Initialize cluster centers
+    idx = np.random.randint(N, size=clusters)
+    initial_w = X[idx,:]
+    w_draw = initial_w
+    print(w_draw)
+
+    #Reshape into vector (needed by ngradient)
+    w_vector = initial_w.reshape(clusters*M, 1)
+
+    #Vector to store cost
+    xx = np.linspace(1, num_iter, num_iter)
+    kmeans_cost = np.empty(*xx.shape)
+    kmeans_cost[:] = np.nan
+
+    fig = plt.figure(figsize=(14,6))
+    ax1  = fig.add_subplot(121)
+    util.scatter_data(X,labels,ax=ax1)
+
+    line1, = ax1.plot(w_draw[:,0], w_draw[:,1], "k*",markersize=10, label='W-vector')
+    # im3  = ax1.scatter(w_draw[:,0], w_draw[:,1])
+    ax1.grid()
+
+    ax2  = fig.add_subplot(122, xlim=(0, num_iter), ylim=(0, 10))
+
+    text_str = 'k={}, g={:.2f}\ncost={:.2f}'.format(0, 0, 0)
+
+    txt2 = ax2.text(0.3, 0.95, text_str, bbox={'facecolor': 'green', 'alpha': 0.4, 'pad': 10},
+             transform=ax2.transAxes)
+
+#     xx = xx.reshape(1,-1)
+    line2, = ax2.plot(xx, kmeans_cost, lw=2)
+    ax2.set_xlabel('Iteration')
+    ax2.set_ylabel('Cost')
+    ax2.grid()
+
+    for k in np.arange(num_iter):
+
+        # gradient ascent
+        g = util.ngradient(fun,w_vector)
+        w_vector = w_vector - mu*g.T
+        # calculate cost for plotting
+        kmeans_cost[k] = fun(w_vector)
+        text_str = 'k={}, cost={:.2f}'.format(k, kmeans_cost[k])
+        txt2.set_text(text_str)
+        # plot
+        line2.set_ydata(kmeans_cost)
+        w_draw_new = w_vector.reshape(clusters, M)
+        line1.set_data(w_draw_new[:,0], w_draw_new[:,1])
+        display(fig)
+        clear_output(wait = True)
+        plt.pause(.005)
+    # TODO: Find distance of each point to each cluster center
+    # Then find the minimum distances min_dist and indices min_index
+    w_final = w_vector.reshape(clusters, M)
+
+    D = scipy.spatial.distance.cdist(X, w_final, metric='euclidean') #distances between X and C
+    min_index = np.argmin(D, axis=1)
+    min_dist = np.zeros((len(min_index),1))
+    for i in range(len(min_index)):
+        min_dist[i,0] = D.item((i, min_index[i]))
+     # Sort by intensity of cluster center
+    sorted_order = np.argsort(w_final[:,0], axis=0)
+    
+    # Update the cluster indices based on the sorted order and return results in
+    # predicted_labels
+    predicted_labels = np.empty(*min_index.shape)
+    predicted_labels[:] = np.nan
+    
+    for i in np.arange(len(sorted_order)):
+        predicted_labels[min_index==sorted_order[i]] = i
+    
+    return kmeans_cost, predicted_labels, w_final
+
+def predicted_kmeans_test(w_final, test_data):
+    D = scipy.spatial.distance.cdist(test_data, w_final, metric='euclidean') #distances between X and C
+    min_index = np.argmin(D, axis=1)
+    min_dist = np.zeros((len(min_index),1))
+    for i in range(len(min_index)):
+        min_dist[i,0] = D.item((i, min_index[i]))
+     # Sort by intensity of cluster center
+    sorted_order = np.argsort(w_final[:,0], axis=0)
+    
+    # Update the cluster indices based on the sorted order and return results in
+    # predicted_labels
+    predicted_labels = np.empty(*min_index.shape)
+    predicted_labels[:] = np.nan
+    
+    for i in np.arange(len(sorted_order)):
+        predicted_labels[min_index==sorted_order[i]] = i
+    return predicted_labels
+
+def segmentation_mymethod(train_data, train_labels, all_data_matrix, all_labels_matrix,test_data, task='tissue'):
     # segments the image based on your own method!
     # Input:
     # train_data_matrix   num_pixels x num_features x num_subjects matrix of
@@ -26,6 +132,24 @@ def segmentation_mymethod(train_data_matrix, train_labels_matrix, test_data, tas
 
     #------------------------------------------------------------------#
     #TODO: Implement your method here
+    if (task == 'tissue'):
+        clusters=4 
+    else: 
+        clusters = 2
+#    train_data_matrix,_ = seg.normalize_data(train_data_matrix)
+#    test_data,_ = seg.normalize_data(test_data)
+    _, _, w_final = kmeans(train_data, train_labels, clusters, mu = 0.1, num_iter = 5)
+    
+    pred_labels_kmeans = predicted_kmeans_test(w_final, test_data)
+    _, pred_labels_cat = seg.segmentation_combined_atlas(train_labels, combining='mode') 
+    _ ,pred_labels_cnn = seg.segmentation_combined_knn(all_data_matrix, all_labels_matrix, test_data, 1)
+    pred_labels_cat = pred_labels_cat.T
+    pred_labels_cnn = pred_labels_cnn.T
+    
+    concat_labels = np.vstack((pred_labels_kmeans, pred_labels_cat, pred_labels_cnn)).T
+    predicted_labels = scipy.stats.mode(concat_labels, axis = 1)[0]
+   
+ 
     #------------------------------------------------------------------#
     return predicted_labels
 
@@ -36,7 +160,7 @@ def segmentation_demo():
     test_subject = 2
     train_slice = 1
     test_slice = 1
-    task = 'brain'
+    task = 'tissue'
 
     #Load data
     train_data, train_labels, train_feature_labels = util.create_dataset(train_subject,train_slice,task)
@@ -57,11 +181,11 @@ def segmentation_demo():
     true_mask = test_labels.reshape(240, 240)
     predicted_mask = predicted_labels.reshape(240, 240)
 
-    # fig = plt.figure(figsize=(8,8))
-    # ax1 = fig.add_subplot(111)
-    # ax1.imshow(true_mask, 'gray')
-    # ax1.imshow(predicted_mask, 'viridis', alpha=0.5)
-    # print('Subject {}, slice {}.\nErr {}, dice {}'.format(test_subject, test_slice, err, dice))
+    fig = plt.figure(figsize=(8,8))
+    ax1 = fig.add_subplot(111)
+    ax1.imshow(true_mask, 'gray')
+    ax1.imshow(predicted_mask, 'viridis', alpha=0.5)
+    print('Subject {}, slice {}.\nErr {}, dice {}'.format(test_subject, test_slice, err, dice))
 
     ## Compare methods
     num_images = 5

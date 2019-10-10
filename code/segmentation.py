@@ -141,7 +141,7 @@ def cost_kmeans(X, w_vector):
     return J
 
 
-def kmeans_clustering(test_data, K=2):
+def kmeans_clustering(test_data, K=4):
     # Returns the labels for test_data, predicted by the kMeans
     # classifier which assumes that clusters are ordered by intensity
     #
@@ -204,7 +204,7 @@ def kmeans_clustering(test_data, K=2):
     
     for i in np.arange(len(sorted_order)):
         predicted_labels[min_index==sorted_order[i]] = i
-    return predicted_labels
+    return predicted_labels, w_final
 
 
 def nn_classifier(train_data, train_labels, test_data):
@@ -354,7 +354,7 @@ def segmentation_combined_atlas(train_labels_matrix, combining='mode'):
     else:
         raise ValueError("No such combining type exists")
 
-    return predicted_labels.astype(bool)
+    return predicted_labels.astype(bool), predicted_labels
 
 
 def segmentation_atlas(train_data, train_labels, test_data):
@@ -404,7 +404,7 @@ def segmentation_combined_knn(train_data_matrix, train_labels_matrix, test_data,
     #Combine labels
     predicted_labels = scipy.stats.mode(predicted_labels, axis=1)[0]
 
-    return predicted_labels.astype(bool)
+    return predicted_labels.astype(bool), predicted_labels
 
 
 def segmentation_knn(train_data, train_labels, test_data, k=1):
@@ -445,39 +445,3 @@ def segmentation_knn(train_data, train_labels, test_data, k=1):
 
     return predicted_labels
 
-# Project
-def load_images():
-    #the labels are based on a different task: white matter vs gray matter vs cerebrospinal fluid
-    
-    GT = plt.imread('../data/dataset_brains/1_1_gt.tif')
-    GT_new = GT.copy()
-    print(GT_new[150])
-    for k in range(len(GT_new)):
-        for i in range(len(GT_new)):
-            
-            if GT[k][i] == 8:
-                GT_new[k][i] = 1
-            elif GT[k][i] == 4:
-                GT_new[k][i] = 1
-            elif GT[k][i] == 5:
-                GT_new[k][i] = 2
-            elif GT[k][i] == 2:
-                GT_new[k][i] = 2
-            elif GT[k][i] == 7:
-                GT_new[k][i] = 3
-            elif GT[k][i] == 3:
-                GT_new[k][i] = 3
-            
-
-    fig = plt.figure(figsize=(5,5))
-    ax1  = fig.add_subplot(111)
-    ax1.imshow(GT_new)
-    X = GT_new.flatten().T
-    return GT_new
-
-def extract_feature_project():
-    image_number = 1
-    slice_number = 1
-    task = 'tissue'
-    X, Y, feature_labels = util.create_dataset(image_number, slice_number, task)
-    return X, Y, feature_labels
