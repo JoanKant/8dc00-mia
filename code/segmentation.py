@@ -154,8 +154,6 @@ def kmeans_clustering(test_data, K=4):
     #Link to the cost function of kMeans
     fun = lambda w: cost_kmeans(test_data, w)
     
-    
-    
     # the learning rate
     mu = 0.01
     
@@ -189,9 +187,6 @@ def kmeans_clustering(test_data, K=4):
     for i in range(len(min_index)):
         min_dist[i,0] = D.item((i, min_index[i]))
     
-    
-    
-    
     #------------------------------------------------------------------#
     
     # Sort by intensity of cluster center
@@ -204,7 +199,7 @@ def kmeans_clustering(test_data, K=4):
     
     for i in np.arange(len(sorted_order)):
         predicted_labels[min_index==sorted_order[i]] = i
-    return predicted_labels, w_final
+    return predicted_labels
 
 
 def nn_classifier(train_data, train_labels, test_data):
@@ -392,7 +387,6 @@ def segmentation_combined_knn(train_data_matrix, train_labels_matrix, test_data,
     #
     # Output:
     # predicted_labels    Predicted labels for the test slice
-
     r, c = train_labels_matrix.shape
 
     predicted_labels = np.empty([r,c])
@@ -400,7 +394,7 @@ def segmentation_combined_knn(train_data_matrix, train_labels_matrix, test_data,
 
     for i in np.arange(c):
         predicted_labels[:,i] = segmentation_knn(train_data_matrix[:,:,i], train_labels_matrix[:,i], test_data, k)
-
+    
     #Combine labels
     predicted_labels = scipy.stats.mode(predicted_labels, axis=1)[0]
 
@@ -428,11 +422,9 @@ def segmentation_knn(train_data, train_labels, test_data, k=1):
 
     subset_train_data = train_data[ix,:]
     subset_train_labels = train_labels[ix]
-
-
+    
     #Normalize
     [train_data_norm, test_data_norm] = normalize_data(subset_train_data, test_data);
-
     #Train and apply kNN classifier
 
     # Option 1: The implementation we made in this course (slower)

@@ -271,7 +271,7 @@ def dice_multiclass(true_labels, predicted_labels):
         temp_true[true_labels != all_classes[i]] = 0  #Everything else is background
 
         temp_predicted = predicted_labels.copy();
-        print(temp_predicted.dtype)
+#        print(temp_predicted.dtype)
         temp_predicted[predicted_labels == all_classes[i]] = 1
         temp_predicted[predicted_labels != all_classes[i]] = 0
         dice_score[i] = dice_overlap(temp_true.astype(int), temp_predicted.astype(int))

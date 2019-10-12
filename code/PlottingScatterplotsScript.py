@@ -78,15 +78,15 @@ train_data,_ = seg.normalize_data(train_data)#selecting parts of the features gi
 #
 #        plt.close()
         
-def combine(arr,s): return list(combinations(arr,s))
-
-arr  = [0,1,2,3,4,5,6,7,8,9]
-combis = combine(arr,2)
-
-for i in range(len(combis)):
-        plot = util.scatter_data(train_data,train_labels, combis[i][0], combis[i][1])
-        plt.title("Feature {} vs {}".format(combis[i][0], combis[i][1]))
-        handles, labels = plot.get_legend_handles_labels()
-        plt.figlegend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, -0.05), bbox_transform=plt.gcf().transFigure, ncol = 4)
-        plt.savefig("This is feature {} vs {} of".format(train_labels[combis[i][0]], train_labels[combis[i][1]]))
-        plt.close()
+#def combine(arr,s): return list(combinations(arr,s))
+#
+#arr  = [0,1,2,3,4,5,6,7,8,9]
+#combis = combine(arr,2)
+#
+#for i in range(len(combis)):
+#        plot = util.scatter_data(train_data,train_labels, combis[i][0], combis[i][1])
+#        plt.title("Feature {} vs {}".format(combis[i][0], combis[i][1]))
+#        handles, labels = plot.get_legend_handles_labels()
+#        plt.figlegend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, -0.05), bbox_transform=plt.gcf().transFigure, ncol = 4)
+#        plt.savefig("This is feature {} vs {} of".format(train_labels[combis[i][0]], train_labels[combis[i][1]]))
+#        plt.close()
