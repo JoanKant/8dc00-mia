@@ -10,7 +10,7 @@ import cad
 import scipy
 from IPython.display import display, clear_output
 import scipy.io
-
+import suppFunctionsCAD as sup
 
 def nuclei_measurement():
 
@@ -51,6 +51,7 @@ def nuclei_measurement():
     # TODO: Implement training of a linear regression model for measuring
     # the area of nuclei in microscopy images. Then, use the trained model
     # to predict the areas of the nuclei in the test dataset.
+    _, _, predicted_y = sup.linear_regression(training_x, test_x)
     #---------------------------------------------------------------------#
 
     # visualize the results

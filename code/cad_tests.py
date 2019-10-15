@@ -47,14 +47,12 @@ def linear_regression():
     trainX = train_data[:,0].reshape(-1,1)
     trainXones = util.addones(trainX)
     trainY = train_data[:,1].reshape(-1,1)
-    
-        
-    validation_data= validation_data[:,0].reshape(-1,1)
-    validationones = util.addones(validation_data)
+            
+    validationX= validation_data[:,0].reshape(-1,1)
+    validationones = util.addones(validationX)
     validationY = validation_data[:,1].reshape(-1,1)
-    
-    
-    Theta, _ = reg.ls_solve(trainXones, trainY)
+        
+    Theta, _ = reg.ls_solve(trainXones, trainY) 
     print(Theta)
     #---------------------------------------------------------------------#
 
@@ -102,7 +100,7 @@ def quadratic_regression():
     train_data = np.loadtxt(fn2)
     # shape (10,2) numpy array; x = column 0, y = column 1
     validation_data = np.loadtxt(fn3)
-
+    
     # plot the training dataset
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111)
@@ -111,24 +109,29 @@ def quadratic_regression():
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_title('Training data')
-
+    
     #---------------------------------------------------------------------#
     # TODO: Implement training of a linear regression model.
     # Here you should reuse ls_solve() from the registration mini-project.
     # The provided addones() function adds a column of all ones to a data
     # matrix X in a similar way to the c2h() function used in registration.
-
+    
     trainX = train_data[:,0].reshape(-1,1)
+    trainXsquared  = np.square(train_data[:,0]).reshape(-1,1)
+    trainX = np.hstack((trainX, trainXsquared))
     trainXones = util.addones(trainX)
     trainY = train_data[:,1].reshape(-1,1)
     
-    
-    
+    validationX = validation_data[:,0].reshape(-1,1)
+    validationXsquared= np.square(validation_data[:,0]).reshape(-1,1)
+    validationX = np.hstack((validationX, validationXsquared))
+    validationones = util.addones(validationX)
+    validationY = validation_data[:,1].reshape(-1,1)
     
     Theta, _ = reg.ls_solve(trainXones, trainY)
     print(Theta)
     #---------------------------------------------------------------------#
-
+    
     fig1 = plt.figure(figsize=(10,10))
     ax1 = fig1.add_subplot(111)
     util.plot_regression(trainX, trainY, Theta, ax1)
@@ -137,10 +140,13 @@ def quadratic_regression():
     ax1.set_ylabel('y')
     ax1.legend(('Original data', 'Regression curve', 'Predicted Data', 'Error'))
     ax1.set_title('Training set')
-
+    
     testX = test_data[:,0].reshape(-1,1)
+    testXsquared = np.square(testX[:,0]).reshape(-1,1)
+    testX = np.hstack((testX, testXsquared))
+    
     testY = test_data[:,1].reshape(-1,1)
-
+    
     fig2 = plt.figure(figsize=(10,10))
     ax2 = fig2.add_subplot(111)
     util.plot_regression(testX, testY, Theta, ax2)
@@ -149,14 +155,12 @@ def quadratic_regression():
     ax2.set_ylabel('y')
     ax2.legend(('Original data', 'Regression curve', 'Predicted Data', 'Error'))
     ax2.set_title('Test set')
-
-    #---------------------------------------------------------------------#
+    
     # TODO: Compute the error for the trained model.
     predictedY = validationones.dot(Theta)
     predictedY_test = util.addones(testX).dot(Theta)
     E_validation =np.sum(np.square(np.subtract(predictedY, validationY)))
     E_test  =np.sum(np.square(np.subtract(predictedY_test, testY)))
-    #---------------------------------------------------------------------#
     #---------------------------------------------------------------------#
 
     return E_validation, E_test
@@ -228,7 +232,7 @@ def logistic_regression():
     ax2.set_title('mu = '+str(mu))
     h1, = ax2.plot(iters, loss, linewidth=2, label='Training loss')
     h2, = ax2.plot(iters, validation_loss, linewidth=2, label='Validation loss')
-    ax2.set_ylim(0, 0.7)
+    ax2.set_ylim(0, 0.7)    
     ax2.set_xlim(0, num_iterations)
     ax2.grid()
     ax1.legend()
@@ -248,7 +252,7 @@ def logistic_regression():
         # gradient descent:
         # here we reuse the code for numerical computation of the gradient
         # of a function
-        Theta = Theta - mu*reg.ngradient(loss_fun, Theta)
+        Theta = Theta - mu*reg.ngradient(loss_fun, Theta).T
 
         # compute the loss for the current model parameters for the
         # training and validation sets
