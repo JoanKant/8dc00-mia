@@ -31,7 +31,7 @@ def segmentation_mymethod(train_data, train_labels , test_data,num_iter = 100,mu
     #TODO: Implement your method here
     
     #define your features
-    features = [2,4] #change this if needed
+    features = [1, 4] #change this if needed
     
     #select the data using features
     train_data_matrix = train_data[:,features,:]
@@ -116,7 +116,7 @@ def segmentation_demo():
     all_dice[:] = np.nan
 
     all_subjects = np.arange(5) #list of all subjects [0, 1, 2, 3, 4]
-    train_slice = 1
+    train_slice = 2
     task = 'tissue'
     all_data_matrix = np.empty([train_data.shape[0],train_data.shape[1],num_images])
     all_labels_matrix = np.empty([train_labels.size,num_images])
@@ -171,7 +171,7 @@ def segmentation_demo():
 
         #OUR METHOD
         #predict the labels using our method
-        predicted_labels_mymethod = segmentation_mymethod(train_data_matrix,train_labels_matrix,test_data,num_iter = 5,mu = 0.1)
+        predicted_labels_mymethod = segmentation_mymethod(train_data_matrix,train_labels_matrix,test_data,num_iter = 100,mu = 0.1)
         
         #determine error and dice (multiclass, since there are more classes)
         all_errors[i,2] = util.classification_error(test_labels, predicted_labels_mymethod)
