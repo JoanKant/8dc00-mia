@@ -13,8 +13,9 @@ import scipy
 from IPython.display import display, clear_output
 import scipy.io
 import suppFunctionsCAD as sup
+import random 
 
-fn = './data/nuclei_data.mat'
+fn = '../data/nuclei_data.mat'
 mat = scipy.io.loadmat(fn)
 test_images = mat["test_images"] # shape (24, 24, 3, 20730)
 test_y = mat["test_y"] # shape (20730, 1)
@@ -43,6 +44,7 @@ imageSize = training_images.shape
 # every pixel is a feature so the number of features is:
 # height x width x color channels
 numFeatures = imageSize[0]*imageSize[1]*imageSize[2]
+
 training_x = training_images.reshape(numFeatures, imageSize[3]).T.astype(float)
 test_x = test_images.reshape(numFeatures, test_images.shape[3]).T.astype(float)
 
@@ -51,7 +53,7 @@ test_x = test_images.reshape(numFeatures, test_images.shape[3]).T.astype(float)
 # TODO: Implement training of a linear regression model for measuring
 # the area of nuclei in microscopy images. Then, use the trained model
 # to predict the areas of the nuclei in the test dataset.
-_, _, predicted_y = sup.linear_regression(training_x, test_x)
+E_test, predicted_y = sup.linear_regression(training_x, test_x);
 #---------------------------------------------------------------------#
 
 # visualize the results
@@ -67,6 +69,12 @@ ax1.set_title('Training with full sample')
 #---------------------------------------------------------------------#
 # TODO: Train a model with reduced dataset size (e.g. every fourth
 # training sample).
+ix = np.random.randint(imageSize[3], size=int(imageSize[3]/4))
+numFeatures = imageSize[0]*imageSize[1]*imageSize[2]
+training_x = training_images[:,:,:,ix].reshape(numFeatures, len(ix)).T.astype(float)
+
+E_test_small, predicted_y = sup.linear_regression(training_x, test_x);
+
 #---------------------------------------------------------------------#
 
 # visualize the results

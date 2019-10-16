@@ -11,7 +11,7 @@ import scipy
 from IPython.display import display, clear_output
 import scipy.io
 import suppFunctionsCAD as sup
-
+import random
 def nuclei_measurement():
 
     fn = '../data/nuclei_data.mat'
@@ -51,7 +51,7 @@ def nuclei_measurement():
     # TODO: Implement training of a linear regression model for measuring
     # the area of nuclei in microscopy images. Then, use the trained model
     # to predict the areas of the nuclei in the test dataset.
-    _, _, predicted_y = sup.linear_regression(training_x, test_x)
+    E_test, predicted_y = sup.linear_regression(training_x, test_x)
     #---------------------------------------------------------------------#
 
     # visualize the results
@@ -67,6 +67,16 @@ def nuclei_measurement():
     #---------------------------------------------------------------------#
     # TODO: Train a model with reduced dataset size (e.g. every fourth
     # training sample).
+    ix = np.random.randint(imageSize[3], size=int(imageSize[3]/5))
+    numFeatures = imageSize[0]*imageSize[1]*imageSize[2]
+    training_x = training_images[:,:,:,ix].reshape(numFeatures, len(ix)).T.astype(float)
+    
+    E_test_small, predicted_y = sup.linear_regression(training_x, test_x);
+    
+    
+    #Evaluation 
+    print("The error for testset using traindata consisting of all samples: {}".format(E_test))
+    print("The error for testset using traindata consisting of less samples: {}".format(E_test_small))
     #---------------------------------------------------------------------#
 
     # visualize the results
@@ -77,6 +87,8 @@ def nuclei_measurement():
     ax2.set_ylabel('Predicted Area')
     ax2.set_title('Training with smaller sample')
 
+
+#mu = 0.001, batch_size = 30, num_iterations = 200
 
 def nuclei_classification():
     ## dataset preparation
@@ -119,13 +131,11 @@ def nuclei_classification():
     # (batch_size) and number of iterations (num_iterations), as well as
     # initial values for the model parameters (Theta) that will result in
     # fast training of an accurate model for this classification problem.
-    # mu = ...
-
-    # batch_size = ...
-
-    # Theta = ...
-
-    # num_iterations = ...
+    mu = 0.00001
+    batch_size = 500
+    r,c = training_x.shape
+    Theta  = 0.02*np.random.rand(c+1, 1)
+    num_iterations = 300
     #-------------------------------------------------------------------#
 
     xx = np.arange(num_iterations)
@@ -182,3 +192,10 @@ def nuclei_classification():
         display(fig)
         clear_output(wait = True)
         plt.pause(.005)
+    
+  
+    ---------------------------------------------------------------------#
+#     TODO: Compute the error for the trained model.
+    predictedY_test = util.addones(test_x).dot(Theta)
+    E_test  =np.sum(np.square(np.subtract(predictedY_test, test_y)))
+    return predictedY_test, E_test 

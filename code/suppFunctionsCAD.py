@@ -37,29 +37,9 @@ def linear_regression(train_data, test_data):
         
     Theta, _ = reg.ls_solve(trainXones, trainY) 
     print(Theta)
-    #---------------------------------------------------------------------#
-
-    fig1 = plt.figure(figsize=(10,10))
-    ax1 = fig1.add_subplot(111)
-    util.plot_regression(trainX, trainY, Theta, ax1)
-    ax1.grid()
-    ax1.set_xlabel('x')
-    ax1.set_ylabel('y')
-    ax1.legend(('Original data', 'Regression curve', 'Predicted Data', 'Error'))
-    ax1.set_title('Training set')
-
+    #---------------------------------------------------------------------
     testX = test_data[:,0].reshape(-1,1)
     testY = test_data[:,1].reshape(-1,1)
-
-    fig2 = plt.figure(figsize=(10,10))
-    ax2 = fig2.add_subplot(111)
-    util.plot_regression(testX, testY, Theta, ax2)
-    ax2.grid()
-    ax2.set_xlabel('x')
-    ax2.set_ylabel('y')
-    ax2.legend(('Original data', 'Regression curve', 'Predicted Data', 'Error'))
-    ax2.set_title('Test set')
-
     #---------------------------------------------------------------------#
     # TODO: Compute the error for the trained model.
     predictedY_test = util.addones(testX).dot(Theta)
@@ -67,3 +47,24 @@ def linear_regression(train_data, test_data):
     #---------------------------------------------------------------------#
 
     return E_test, predictedY_test
+
+def ClassAccuracy(true_classes, predicted_classes):
+    t = true_classes.flatten()
+    p = predicted_classes.flatten()
+    FP = 0
+    FN = 0
+    TP = 0
+    TN = 0
+    for i in range(len(t)):
+        if t[i] == False and p[i] == True:
+            FP +=1 
+        elif t[i] == True and p[i] == False:
+            FN += 1
+        elif t[i] == True and p[i] == True: 
+            TP +=1
+        elif t[i] == False and p[i] == False:
+            TN +=1
+        
+    accuracy = TP+TN/(TP+TN+FP+FN)
+    return accuracy
+
