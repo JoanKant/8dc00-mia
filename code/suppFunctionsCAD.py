@@ -34,7 +34,6 @@ def linear_regression(train_data, test_data):
     trainXones = util.addones(trainX)
     trainY = train_data[:,1].reshape(-1,1)
        
-        
     Theta, _ = reg.ls_solve(trainXones, trainY) 
     print(Theta)
     #---------------------------------------------------------------------

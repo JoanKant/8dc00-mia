@@ -14,4 +14,5 @@ import cad_project as prj
 #print("Logistic regression for nuclei classification")
 
 #for i in range
+
 predictedY_test, E_test  = prj.nuclei_classification(mu = 0.0001, batch_size = 30, num_iterations = 200); 
