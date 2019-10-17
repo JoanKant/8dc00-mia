@@ -51,7 +51,7 @@ def nuclei_measurement(batch_size = 1000):
 
   
     #Predict Y (= area) for the test set and return the error too
-    E_test, predicted_y = sup.linear_regression(training_x, test_x)
+    E_test, predicted_y = sup.linear_regression(training_x, test_x, numFeatures)
 
     # visualize the results
     fig2 = plt.figure(figsize=(16,8))
@@ -73,7 +73,7 @@ def nuclei_measurement(batch_size = 1000):
     #Select the train data (only select certain samples)
     training_x = training_images[:,:,:,ix].reshape(numFeatures, len(ix)).T.astype(float)
     
-    E_test_small, predicted_y = sup.linear_regression(training_x, test_x);
+    E_test_small, predicted_y = sup.linear_regression(training_x, test_x, batch_size);
  
     #Evaluation 
     print("The error for testset using traindata consisting of all samples: {:.2f}".format(E_test))
