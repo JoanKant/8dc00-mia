@@ -12,7 +12,9 @@ from IPython.display import display, clear_output
 import scipy.io
 import suppFunctionsCAD as sup
 import random
-def nuclei_measurement():
+import segmentation_util as seg_util
+
+def nuclei_measurement(batch_size = 1000):
 
     fn = '../data/nuclei_data.mat'
     mat = scipy.io.loadmat(fn)
@@ -36,13 +38,14 @@ def nuclei_measurement():
     ax1.set_title('300 smallest nuclei')
     util.montageRGB(X_large, ax2)
     ax2.set_title('300 largest nuclei')
-
+    
     # dataset preparation
     imageSize = training_images.shape
 
     # every pixel is a feature so the number of features is:
     # height x width x color channels
     numFeatures = imageSize[0]*imageSize[1]*imageSize[2]
+    print((numFeatures))
     training_x = training_images.reshape(numFeatures, imageSize[3]).T.astype(float)
     test_x = test_images.reshape(numFeatures, test_images.shape[3]).T.astype(float)
 
@@ -64,16 +67,14 @@ def nuclei_measurement():
     # TODO: Train a model with reduced dataset size (e.g. every fourth
     # training sample).
     
-    #Choose the samples randomly, only set the number of samples
-    ix = np.random.randint(imageSize[3], size=int(imageSize[3]/5))
+    #Choose the samples randomly, only set the number of samples (original 21910 samples)
+    ix = np.random.randint(imageSize[3], size=batch_size)
     
     #Select the train data (only select certain samples)
     training_x = training_images[:,:,:,ix].reshape(numFeatures, len(ix)).T.astype(float)
     
     E_test_small, predicted_y = sup.linear_regression(training_x, test_x);
-        #save the final loss curve
-    plt.savefig("Predicted area and real area") 
-    
+ 
     #Evaluation 
     print("The error for testset using traindata consisting of all samples: {:.2f}".format(E_test))
     print("The error for testset using traindata consisting of less samples: {:.2f}".format(E_test_small))
@@ -86,11 +87,14 @@ def nuclei_measurement():
     ax2.set_xlabel('Area')
     ax2.set_ylabel('Predicted Area')
     ax2.set_title('Training with smaller sample')
+    fig2.savefig("Predicted area and real area with batch size {}".format(batch_size)) 
+
+    return E_test, E_test_small
 
 
 #mu = 0.001, batch_size = 30, num_iterations = 200
 
-def nuclei_classification():
+def nuclei_classification(mu, batch_size, num_iterations):
     ## dataset preparation
     fn = '../data/nuclei_data_classification.mat'
     mat = scipy.io.loadmat(fn)
@@ -131,11 +135,18 @@ def nuclei_classification():
     # (batch_size) and number of iterations (num_iterations), as well as
     # initial values for the model parameters (Theta) that will result in
     # fast training of an accurate model for this classification problem.
-    mu = 0.00001
-    batch_size = 500
+#    mu = 0.00001
+#    batch_size = 500
+#    num_iterations = 300
+    
+    
     r,c = training_x.shape
+   
     Theta  = 0.02*np.random.rand(c+1, 1)
-    num_iterations = 300
+        
+ 
+        
+    
     #-------------------------------------------------------------------#
 
     xx = np.arange(num_iterations)
@@ -181,7 +192,7 @@ def nuclei_classification():
         # visualize the training
         h1.set_ydata(loss)
         h2.set_ydata(validation_loss)
-        text_str2 = 'iter.: {}, loss: {:.3f}, val. loss={:.3f} '.format(k, loss[k], validation_loss[k])
+        text_str2 = 'iter.: {}, loss: {:.3f}, val. loss={:.3f}'.format(k, loss[k], validation_loss[k])
         txt2.set_text(text_str2)
 
         Theta = None
@@ -194,7 +205,7 @@ def nuclei_classification():
         plt.pause(.005)
     
     #save the final loss curve
-    plt.savefig("Loss curve for batch size {} and init mu {:.2}".format(batch_size, mu)) 
+    plt.savefig("Loss curve for batch size {} and init mu {:.2}.png".format(batch_size, mu)) 
   
  #   ---------------------------------------------------------------------#
 #     TODO: Compute the error for the trained model.
@@ -202,7 +213,7 @@ def nuclei_classification():
     E_test  =np.sum(np.square(np.subtract(predictedY_test, test_y)))
     return predictedY_test, E_test 
 
-def auto_nuclei_classification():
+def auto_nuclei_classification(mu, batch_size):
     ## dataset preparation
     fn = '../data/nuclei_data_classification.mat'
     mat = scipy.io.loadmat(fn)
@@ -243,12 +254,12 @@ def auto_nuclei_classification():
     # (batch_size) and number of iterations (num_iterations), as well as
     # initial values for the model parameters (Theta) that will result in
     # fast training of an accurate model for this classification problem.
-    a = 5
-    mu_init =10**-a;
-    mu = mu_init;
+#    a = 5
+#    mu_init =10**-a;
+#    mu = mu_init;
     
     #number of training samples
-    batch_size = 500
+#    batch_size = 3000
     r,c = training_x.shape
     
     #initial weights 
@@ -264,9 +275,16 @@ def auto_nuclei_classification():
     g = np.empty(*xx.shape)
     g[:] = np.nan
     
-    fig = plt.figure(figsize=(8,8))
+    
+    idx = np.random.randint(training_x.shape[0], size=batch_size)
+    
+    
+    # Create base figure
+    fig = plt.figure(figsize=(15,10))
+  
     ax2 = fig.add_subplot(111)
     ax2.set_xlabel('Iteration')
+
     ax2.set_ylabel('Loss (average per sample)')
     ax2.set_title('mu = '+str(mu))
     h1, = ax2.plot(xx, loss, linewidth=2) #'Color', [0.0 0.2 0.6],
@@ -304,8 +322,7 @@ def auto_nuclei_classification():
         validation_loss[k] = cad.lr_nll(validation_x_ones, validation_y, Theta_new)/validation_x.shape[0]
     
         #distance to zero (0,0) used for minimizing loss
-        normgradient = np.linalg.norm(validation_loss[k])
-    
+        normgradient = np.linalg.norm(validation_loss[k])    
         
         # visualize the training
         ax2.set_xlim(0, k) #axis needs to be adapted every iteration
@@ -317,24 +334,25 @@ def auto_nuclei_classification():
         text_str2 = 'iter.: {}, loss: {:.3f}, val. loss={:.3f} '.format(k, loss[k], validation_loss[k])
         txt2.set_text(text_str2)
     
+
+
+
+        display(fig)
+        clear_output(wait = True)   
+    
+ 
         #Set the new weights
         Theta = None
         Theta = np.array(Theta_new)
         Theta_new = None
         tmp = None
-    
+             
         display(fig)
         clear_output(wait = True)
         plt.pause(.005)
-        
-
-        #Adapt the learning rate
-        if counter == 50:
-            mu = mu/10;
-            counter = 0;
-      
+   
         #Stop when the validation_loss doesn't decrease any further by comparing the current validation loss with x iterations ago     
-        if k>200: 
+        if k>100: 
             if round(validation_loss[k],4) == round(validation_loss[k-25],4):
                 stopnow = 1; 
                 print("The validation loss has reached its equilibrium")
@@ -344,7 +362,7 @@ def auto_nuclei_classification():
         counter +=1
   
     #save the final loss curve
-    plt.savefig("Loss curve for batch size {} and init mu {:.2}".format(batch_size, mu_init)) 
+    fig.savefig("Loss curve for batch size {} and init mu {:.2}.png".format(batch_size, mu)) 
   
     #predict the test data with the final weights
     predictedY_test = util.addones(test_x).dot(Theta)

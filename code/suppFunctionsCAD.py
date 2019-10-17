@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import cad
 from IPython.display import display, clear_output, HTML
 
-def linear_regression(train_data, test_data):
-#    # plot the training dataset
+def linear_regression(train_data, test_data, batch_size):
+    # plot the training dataset
 #    fig = plt.figure(figsize=(10,10))
 #    ax = fig.add_subplot(111)
 #    ax.plot(train_data[:,0], train_data[:,1], '*')
@@ -33,12 +33,37 @@ def linear_regression(train_data, test_data):
     trainX = train_data[:,0].reshape(-1,1)
     trainXones = util.addones(trainX)
     trainY = train_data[:,1].reshape(-1,1)
-       
+ 
     Theta, _ = reg.ls_solve(trainXones, trainY) 
     print(Theta)
     #---------------------------------------------------------------------
+
+    fig1 = plt.figure(figsize=(10,10))
+    ax1 = fig1.add_subplot(111)
+    util.plot_regression_no_bars(trainX, trainY, Theta, ax1)
+    ax1.grid()
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.legend(('Original data', 'Regression curve', 'Predicted Data', 'Error'))
+    ax1.set_title('Training set')
+    
+    fig1.savefig("Regression train with batch size {}.png".format(batch_size)) 
+
+
     testX = test_data[:,0].reshape(-1,1)
     testY = test_data[:,1].reshape(-1,1)
+
+    fig2 = plt.figure(figsize=(10,10))
+    ax2 = fig2.add_subplot(111)
+    util.plot_regression_no_bars(testX, testY, Theta, ax2)
+    ax2.grid()
+    ax2.set_xlabel('x')
+    ax2.set_ylabel('y')
+    ax2.legend(('Original data', 'Regression curve', 'Predicted Data', 'Error'))
+    ax2.set_title('Test set')
+    
+    fig2.savefig("Regression test with batch size {}.png".format(batch_size)) 
+
     #---------------------------------------------------------------------#
     # TODO: Compute the error for the trained model.
     predictedY_test = util.addones(testX).dot(Theta)

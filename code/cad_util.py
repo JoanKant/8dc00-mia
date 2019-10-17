@@ -38,7 +38,22 @@ def plot_regression(X, Y, Theta, ax):
     for k in np.arange(len(X)):
         ax.plot([X[k,0], X[k,0]], [Y[k], predictedY[k]], c='r')
 
+def plot_regression_no_bars(X, Y, Theta, ax):
+    # Visualize a trained linear regression model.
+    # Input:
+    # X - features, only works with 1D features
+    # Y - targets
+    # Theta - parameters of a polynomial regression model
 
+    predictedY = addones(X).dot(Theta)
+    
+    ax.plot(X[:,0], Y, '*', label='Original data')
+    
+    plot_curve(X[:,0].reshape(-1,1), Theta, ax)
+    
+    ax.plot(X[:,0], predictedY, '*', label='Predicted data')
+
+ 
 def plot_curve(X, Theta, ax):
     # Helper function for plot_regression.
 
@@ -62,14 +77,13 @@ def plot_curve(X, Theta, ax):
     ax.plot(rangeX, addones(expandedRangeX).dot(Theta), linewidth=2, label='Regression curve')
 
 
-def plot_lr(X, Y, Theta, ax):
+def plot_lr(X, Y, Theta, ax, num_range_points = 1000):
     # Visualize the training of a logistic regression model.
     # Input:
     # X - features, only works with 1D features
     # Y - targets
     # Theta - parameters of the logistic regression model
 
-    num_range_points = 1000
 
     mn = np.min(X, axis=0)
     mx = np.max(X, axis=0)

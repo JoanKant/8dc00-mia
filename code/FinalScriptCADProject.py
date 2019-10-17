@@ -5,14 +5,12 @@ Created on Tue Oct 15 16:56:31 2019
 @author: 20171880
 """
 import cad_project as prj
-#
-##Linear regression for nuclei area measurement
-#print("Linear regression for nuclei area measurement")
-#prj.nuclei_measurement()
-#
-##Logistic regression for nuclei classification
-#print("Logistic regression for nuclei classification")
+# First part
+E_test, E_test_small = prj.nuclei_measurement(batch_size = 1000)
 
-#for i in range
+#Second part
+predictedY_test, E_test  = prj.nuclei_classification(mu, batch_size, num_iterations); 
 
-predictedY_test, E_test  = prj.nuclei_classification(mu = 0.0001, batch_size = 30, num_iterations = 200); 
+#Third part
+
+predictedY_test_auto, E_test_auto = prj.auto_nuclei_classification(mu, batch_size)
